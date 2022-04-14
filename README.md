@@ -6,7 +6,8 @@ The database is being built privately and step-by-step. Once the backend and fro
 
 ## ER Schema
 
-The following ER schema has been developed:
+The following ER schema has been developed:![er_schema](https://user-images.githubusercontent.com/13967444/163443220-3d36cb1a-63f4-43e0-9938-d8afbe544c8f.svg)
+
 
 ## Backend
 
