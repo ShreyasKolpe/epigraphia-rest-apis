@@ -14,6 +14,16 @@ EC is a series of volumes (here called **source_text**). Each volume has chapter
 
 The backend will be developed in Python using the Django framework.
 
+Some thoughts:
+1. Django is chosen as it enables rapid development. Python was a requirement keeping in mind extensibility to knowledge graphs, AI and NLP through Python support in such software.
+2. Resources to learn Django:
+    a. [Programming with Harry](https://www.youtube.com/playlist?list=PLK8cqdr55Tsv-D2HMdrnD32oOVBNvmxjr)
+    b. Django [documentation](https://docs.djangoproject.com/en/4.0/), especially about models, fields and querying.
+    c. Developing REST applications in [plain Django](https://stackabuse.com/creating-a-rest-api-in-python-with-django/) or with [Django REST Framework](https://stackabuse.com/creating-a-rest-api-with-django-rest-framework/). Both tutorials are brilliant and lay out the costs of choosing either approach. In this project, plain Django is used.
+3. The Django admin portal provides CRUD operations on database through a UI and obliviates a good deal of rationale for generating own data entry portal involving Auth.
+4. Free small-scale hosting of Python based applications including web apps at [Python Anywhere](https://www.pythonanywhere.com/).
+
+
 ## REST APIs
 
 Register APIs are meant to be create or update i.e., upsert.
