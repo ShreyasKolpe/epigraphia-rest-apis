@@ -19,21 +19,143 @@ The backend will be developed in Python using the Django framework.
 Register APIs are meant to be create or update i.e., upsert.
 
 
-Get APIs are read-only.
+Get APIs are read-only. (Here, the semantics of get is that of fetching, and not that of HTTP GET method. Thus, get is sometimes performed using POST as well)
 
 ### Source Text
 
 1. **Register the text**
+
+Note: Need to implement upsert, not just insert
+
+Request:
+
+```
+POST /api/v1/source_text
+
+{
+	"title": "",
+    "subtitle": "",
+    "series": "",
+    "volume": "",
+	"author": "",
+    "publisher": "",
+    "publication_place": "",
+	"publication_year": "1978"
+}
+```
+
+Note: `title` is the only mandatory field, other fields can be blank
+
+Response:
+
+```
+{
+    "message": "Source text registered successfully",
+    "data": {
+        "source_text_id": ,
+        "source_text_series": "",
+        "source_text_volume": "",
+        "source_text_title": ""
+    }
+}
+```
+
 2. **Get all registered texts**
+
+Request:
+
+```
+GET /api/v1/source_text
+```
+
+Response:
+
+```
+{
+    "source_texts": [ ,
+        ,
+        ...
+    ]
+}
+```
+
 
 ### Source Text Chapter
 
 1. **Register the chapter**
+
+Note: Need to implement upsert, not just insert
+
+Request:
+
+```
+POST /api/v1/source_text_chapter
+
+{
+	"chapter_title": "",
+	"source_text": {
+		"title": "",
+        "subtitle": "",
+        "series": "",
+		"volume": ""
+	}
+}
+```
+
+Note: `chapter_title` is the only mandatory field, and any combination of attributes of `source_text` can be supplied to identify it accurately 
+
+Response:
+
+```
+{
+    "message": "Chapter registered successfully",
+    "data": {
+        "source_text_chapter_id": ,
+        "source_text_chapter_title": "",
+        "source_text": {
+            "source_text_id": ,
+            "source_text_series": "",
+            "source_text_volume": "",
+            "source_text_title": ""
+        }
+    }
+}
+```
+
 2. **Get all registered chapters given text**
+
+
+Request:
+
+```
+POST /api/v1/source_text_chapter/search
+
+{
+	"title": "",
+    "subtitle": "",
+    "series": "",
+	"volume": ""
+}
+```
+
+Note: Any combination of attributes of `source_text` can be supplied to identify it
+
+Response:
+
+```
+{
+    "message": "Successfully found these records",
+    "data": [
+        {
+            "chapter_title": "",
+            "source_text_title": ""
+        },
+        ...
+    ]
+}
+```
 
 ### Inscription
 
-1. **Get all inscriptions in text and chapter**
-2. **Register transliteration for inscription**
-3. **Register translation for inscription**
-4. **Get complete inscription object by text, chapter and inscription number**
+1. **Register transliteration and/or translation for inscription**
+2. **Get complete inscription object by text, chapter and inscription number** (using the view)
