@@ -35,8 +35,6 @@ Get APIs are read-only. (Here, the semantics of get is that of fetching, and not
 
 1. **Register the text**
 
-Note: Need to implement upsert, not just insert
-
 Request:
 
 ```
@@ -93,8 +91,6 @@ Response:
 ### Source Text Chapter
 
 1. **Register the chapter**
-
-Note: Need to implement upsert, not just insert
 
 Request:
 
