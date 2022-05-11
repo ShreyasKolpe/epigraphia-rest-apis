@@ -17,9 +17,13 @@ The backend will be developed in Python using the Django framework.
 Some thoughts:
 1. Django is chosen as it enables rapid development. Python was a requirement keeping in mind extensibility to knowledge graphs, AI and NLP through Python support in such software.
 2. Resources to learn Django:
-    a. [Programming with Harry](https://www.youtube.com/playlist?list=PLK8cqdr55Tsv-D2HMdrnD32oOVBNvmxjr)
-    b. Django [documentation](https://docs.djangoproject.com/en/4.0/), especially about models, fields and querying.
-    c. Developing REST applications in [plain Django](https://stackabuse.com/creating-a-rest-api-in-python-with-django/) or with [Django REST Framework](https://stackabuse.com/creating-a-rest-api-with-django-rest-framework/). Both tutorials are brilliant and lay out the costs of choosing either approach. In this project, plain Django is used.
+
+    - [Programming with Harry](https://www.youtube.com/playlist?list=PLK8cqdr55Tsv-D2HMdrnD32oOVBNvmxjr)
+
+    - Django [documentation](https://docs.djangoproject.com/en/4.0/), especially about models, fields and querying.
+
+    - Developing REST applications in [plain Django](https://stackabuse.com/creating-a-rest-api-in-python-with-django/) or with [Django REST Framework](https://stackabuse.com/creating-a-rest-api-with-django-rest-framework/). Both tutorials are brilliant and lay out the costs of choosing either approach. In this project, plain Django is used.
+
 3. The Django admin portal provides CRUD operations on database through a UI and obliviates a good deal of rationale for generating own data entry portal involving Auth. Further customization through this [tutorial](https://realpython.com/customize-django-admin-python/). 
 4. Free small-scale hosting of Python based applications including web apps at [Python Anywhere](https://www.pythonanywhere.com/).
 
@@ -73,6 +77,14 @@ Response:
 }
 ```
 
+Errors:
+
+
+| HTTP Status | Error Condition |
+|-------------|-----------------|
+| 400, Bad Request | If title is blank |
+
+
 2. **Get source text by id**
 
 Request:
@@ -97,6 +109,14 @@ Response:
     }
 }
 ```
+
+Errors:
+
+
+| HTTP Status | Error Condition |
+|-------------|-----------------|
+| 404, Not Found | If no text matches with request  |
+
 
 3. **Get all registered texts**
 
@@ -166,12 +186,20 @@ Response:
 }
 ```
 
+Errors:
+
+
+| HTTP Status | Error Condition |
+|-------------|-----------------|
+| 400, Bad Request | 1. If chapter title is blank or if no source text is provided |
+|                  | 2. If no source text matches or more than one source texts match with provided information | 
+
 2. **Get chapter by id**
 
 Request:
 
 ```
-GET /api/v1/source_text_chapter/<id>
+GET /api/v1/source_text_chapter/<id:int>
 ```
 
 Response:
@@ -189,6 +217,12 @@ Response:
     }
 }
 ```
+
+Error:
+
+| HTTP Status | Error Condition |
+|-------------|-----------------|
+| 404, Not Found | If no chapter matches the id  |
 
 3. **Get all registered chapters for a source text**
 
@@ -288,6 +322,14 @@ Response:
     }
 }
 ```
+
+Error:
+
+| HTTP Status | Error Condition |
+|-------------|-----------------|
+| 400, Bad Request | 1. If inscription_id is absent and if chapter info. or inscription_number are missing |
+|                  | 2. If no chapter matches or more than one chapters match with provided info. |
+| 404, Not Found | If inscription_id is supplied but no inscription matches it  |
 
 2. **Get complete inscription object by text, chapter and inscription number** (using the view)
 
