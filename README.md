@@ -48,7 +48,7 @@ POST /api/v1/source_text
 	"author": "",
     "publisher": "",
     "publication_place": "",
-	"publication_year": "1978"
+	"publication_year": ""
 }
 ```
 
@@ -60,15 +60,45 @@ Response:
 {
     "message": "Source text registered successfully",
     "data": {
-        "source_text_id": ,
-        "source_text_series": "",
-        "source_text_volume": "",
-        "source_text_title": ""
+        "id": ,
+        "title": "",
+        "subtitle": "",
+        "series": "",
+        "volume": "",
+        "author": "",
+        "publisher": "",
+        "publication_place": "",
+        "publication_year": ""
     }
 }
 ```
 
-2. **Get all registered texts**
+2. **Get source text by id**
+
+Request:
+
+```
+GET /api/v1/source_text/<id>
+```
+
+Response:
+
+```
+{
+    "source_text": {
+        "id": ,
+        "title": "",
+        "series": "",
+        "volume": "",
+        "author": "",
+        "publisher": "",
+        "publication_place": "",
+        "publication_year": ""
+    }
+}
+```
+
+3. **Get all registered texts**
 
 Request:
 
@@ -80,8 +110,14 @@ Response:
 
 ```
 {
-    "source_texts": [ ,
-        ,
+    "source_texts": [ 
+        {
+            "id": ,
+            "title": "",
+            "subtitle": "",
+            "series": "",
+            "volume": "",
+        },
         ...
     ]
 }
@@ -100,6 +136,7 @@ POST /api/v1/source_text_chapter
 {
 	"chapter_title": "",
 	"source_text": {
+        "id": ,
 		"title": "",
         "subtitle": "",
         "series": "",
@@ -108,7 +145,7 @@ POST /api/v1/source_text_chapter
 }
 ```
 
-Note: `chapter_title` is the only mandatory field, and any combination of attributes of `source_text` can be supplied to identify it accurately 
+Note: `chapter_title` is a mandatory field. To identify `source_text` provide either the `id` or a combination of the other attributes. 
 
 Response:
 
@@ -116,19 +153,44 @@ Response:
 {
     "message": "Chapter registered successfully",
     "data": {
-        "source_text_chapter_id": ,
-        "source_text_chapter_title": "",
+        "chapter_id": ,
+        "chapter_title": "",
         "source_text": {
-            "source_text_id": ,
-            "source_text_series": "",
-            "source_text_volume": "",
-            "source_text_title": ""
+            "id": ,
+            "title": "",
+            "subtitle": "",
+            "series": "",
+            "volume": "",
         }
     }
 }
 ```
 
-2. **Get all registered chapters given text**
+2. **Get chapter by id**
+
+Request:
+
+```
+GET /api/v1/source_text_chapter/<id>
+```
+
+Response:
+
+```
+{
+    "chapter_id": ,
+    "chapter_title": "",
+    "source_text": {
+        "id": ,
+        "title": "",
+        "subtitle": "",
+        "series": "",
+        "volume": "",
+    }
+}
+```
+
+3. **Get all registered chapters for a source text**
 
 
 Request:
@@ -137,14 +199,17 @@ Request:
 POST /api/v1/source_text_chapter/search
 
 {
-	"title": "",
-    "subtitle": "",
-    "series": "",
-	"volume": ""
+    "source_text": {
+        "id": ,
+        "title": "",
+        "subtitle": "",
+        "series": "",
+        "volume": ""
+    }
 }
 ```
 
-Note: Any combination of attributes of `source_text` can be supplied to identify it
+Note:  To identify `source_text` provide either the `id` or a combination of the other attributes. 
 
 Response:
 
@@ -153,8 +218,15 @@ Response:
     "message": "Successfully found these records",
     "data": [
         {
+            "chapter_id": "",
             "chapter_title": "",
-            "source_text_title": ""
+            "source_text": {
+                "id": ,
+                "title": "",
+                "subtitle": "",
+                "series": "",
+                "volume": ""
+            }
         },
         ...
     ]
@@ -164,4 +236,88 @@ Response:
 ### Inscription
 
 1. **Register transliteration and/or translation for inscription**
+
+Request:
+
+```
+POST /api/v1/inscription
+
+{
+    "chapter": {
+        "id": ,
+        "title": ""
+    },
+    "inscription_id": ,
+    "inscription_number": "",
+    "translation_header": "",
+    "translation": "",
+    "translation_footer": "",
+    "transliteration_header": "",
+    "transliteration": "",
+    "transliteration_footer": ""
+}
+```
+
+Note: need unique constraint on (inscription_number, chapter_id)
+
+Note: Provide either `id` or `title` to identify chapter. `inscription_number` cannot be null. `inscription_id` is provided for programmatic upsert and is not mandatory. The backend will first check if record exists, and then update the translation and transliteration attributes. Else, it will insert into the database and create the foreign key relations.
+
+Response:
+
+```
+{
+    "message": "Successfully registered translation and/or transliteration",
+    "data": {
+        "source_text": {
+            "id": ,
+            "title": "",
+            "subtitle": "",
+            "series": "",
+            "volume": ""
+        },
+        "chapter": {
+            "id": ,
+            "title": "",
+        }
+        "inscription_id": ,
+        "inscription_number": "",
+        "translation_header": "",
+        "translation": "",
+        "translation_footer": "",
+        "transliteration_header": "",
+        "transliteration": "",
+        "transliteration_footer": ""
+    }
+}
+```
+
 2. **Get complete inscription object by text, chapter and inscription number** (using the view)
+
+Request:
+
+```
+POST /api/v1/inscription/search
+
+{
+    "source_text": {
+        "id": ,
+        "title": "",
+        "subtitle": "",
+        "series": "",
+        "volume": "",
+    },
+    "chapter": {
+        "id": ,
+        "chapter_title": "",
+    }
+    "inscription_number": "",
+}
+```
+
+Note: To identify `source_text` provide either the `id` or a combination of the other attributes. Some such information is mandatory. `chapter_title` and `inscription_number` are mandatory.
+
+Response:
+
+```
+
+```
