@@ -446,4 +446,4 @@ Error:
 
 | HTTP Status | Error Condition |
 |-------------|-----------------|
-| 404, Not Found | If no inscription matches the id  |
+| 404, Not Found | If no inscription matches the filters  |
