@@ -52,7 +52,7 @@ POST /api/v1/source_text
 }
 ```
 
-Note: `title` is the only mandatory field, other fields can be blank
+**Note**: `title` is the only mandatory field, other fields can be blank
 
 Response:
 
@@ -145,7 +145,7 @@ POST /api/v1/source_text_chapter
 }
 ```
 
-Note: `chapter_title` is a mandatory field. To identify `source_text` provide either the `id` or a combination of the other attributes. 
+**Note**: `chapter_title` is a mandatory field. To identify `source_text` provide either the `id` or a combination of the other attributes. 
 
 Response:
 
@@ -209,7 +209,7 @@ POST /api/v1/source_text_chapter/search
 }
 ```
 
-Note:  To identify `source_text` provide either the `id` or a combination of the other attributes. 
+**Note**:  To identify `source_text` provide either the `id` or a combination of the other attributes. 
 
 Response:
 
@@ -258,9 +258,7 @@ POST /api/v1/inscription
 }
 ```
 
-Note: need unique constraint on (inscription_number, chapter_id)
-
-Note: Provide either `id` or `title` to identify chapter. `inscription_number` cannot be null. `inscription_id` is provided for programmatic upsert and is not mandatory. The backend will first check if record exists, and then update the translation and transliteration attributes. Else, it will insert into the database and create the foreign key relations.
+**Note**: Provide either `id` or `title` to identify chapter. `inscription_number` cannot be null. `inscription_id` is provided for programmatic upsert and is not mandatory. The backend will first check if record exists, and then update the translation and transliteration attributes. Else, it will insert into the database and create the foreign key relations.
 
 Response:
 
@@ -314,7 +312,7 @@ POST /api/v1/inscription/search
 }
 ```
 
-Note: To identify `source_text` provide either the `id` or a combination of the other attributes. Some such information is mandatory. `chapter_title` and `inscription_number` are mandatory.
+**Note**: To identify `source_text` provide either the `id` or a combination of the other attributes. Some such information is mandatory. `chapter_title` and `inscription_number` are mandatory.
 
 Response:
 
