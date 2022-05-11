@@ -305,7 +305,11 @@ Response:
             "title": "",
             "subtitle": "",
             "series": "",
-            "volume": ""
+            "volume": "",
+            "author": "",
+            "publisher": "",
+            "publication_place": "",
+            "publication_date": ""
         },
         "chapter": {
             "id": ,
@@ -331,7 +335,53 @@ Error:
 |                  | 2. If no chapter matches or more than one chapters match with provided info. |
 | 404, Not Found | If inscription_id is supplied but no inscription matches it  |
 
-2. **Get complete inscription object by text, chapter and inscription number** (using the view)
+2. **Get complete inscription object by id**
+
+Request:
+
+```
+GET /api/v1/inscription/<inscription_id:int>
+```
+
+**Note**: To identify `source_text` provide either the `id` or a combination of the other attributes. Some such information is mandatory. `chapter_title` and `inscription_number` are mandatory.
+
+Response:
+
+```
+{
+    "source_text": {
+        "id": ,
+        "title": "",
+        "subtitle": "",
+        "series": "",
+        "volume": ""
+        "author": "",
+        "publisher": "",
+        "publication_place": "",
+        "publication_date": ""
+    },
+    "chapter": {
+        "id": ,
+        "title": "",
+    }
+    "inscription_id": ,
+    "inscription_number": "",
+    "translation_header": "",
+    "translation": "",
+    "translation_footer": "",
+    "transliteration_header": "",
+    "transliteration": "",
+    "transliteration_footer": ""
+}
+```
+
+Error:
+
+| HTTP Status | Error Condition |
+|-------------|-----------------|
+| 404, Not Found | If no inscription matches the id  |
+
+3. **Get inscriptions by text, chapter or inscription number**
 
 Request:
 
@@ -344,20 +394,56 @@ POST /api/v1/inscription/search
         "title": "",
         "subtitle": "",
         "series": "",
-        "volume": "",
+        "volume": ""
     },
     "chapter": {
         "id": ,
-        "chapter_title": "",
-    }
-    "inscription_number": "",
+        "chapter_title": ""
+    },
+    "inscription_number": 
 }
 ```
 
-**Note**: To identify `source_text` provide either the `id` or a combination of the other attributes. Some such information is mandatory. `chapter_title` and `inscription_number` are mandatory.
+**Note**: To identify `source_text` provide either the `id` or a combination of the other attributes. Some such information is mandatory. To identify `chapter` provide either its `id` or `chapter_title`. None of the attributes are mandatory, they act only as filters.
 
 Response:
 
 ```
-
+{
+    "message": "Successfully found these records"
+    "data": [
+        {
+            "source_text": {
+                "id": ,
+                "title": "",
+                "subtitle": "",
+                "series": "",
+                "volume": ""
+                "author": "",
+                "publisher": "",
+                "publication_place": "",
+                "publication_date": ""
+            },
+            "chapter": {
+                "id": ,
+                "title": "",
+            }
+            "inscription_id": ,
+            "inscription_number": "",
+            "translation_header": "",
+            "translation": "",
+            "translation_footer": "",
+            "transliteration_header": "",
+            "transliteration": "",
+            "transliteration_footer": ""
+        },
+        ...
+    ]
+}
 ```
+
+Error:
+
+| HTTP Status | Error Condition |
+|-------------|-----------------|
+| 404, Not Found | If no inscription matches the id  |
