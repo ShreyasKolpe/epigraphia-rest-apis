@@ -24,7 +24,7 @@ Some thoughts:
 
     - Developing REST applications in [plain Django](https://stackabuse.com/creating-a-rest-api-in-python-with-django/) or with [Django REST Framework](https://stackabuse.com/creating-a-rest-api-with-django-rest-framework/). Both tutorials are brilliant and lay out the costs of choosing either approach. In this project, plain Django is used.
 
-3. The Django admin portal provides CRUD operations on database through a UI and obliviates a good deal of rationale for generating own data entry portal involving Auth. Further customization through this [tutorial](https://realpython.com/customize-django-admin-python/). 
+3. The Django admin portal provides CRUD operations on database through a UI and obliviates a good deal of rationale for generating own data entry portal involving Auth. Further customization through this [tutorial](https://realpython.com/customize-django-admin-python/). Customizing forms to have multiple models in the same form - look at [this](https://books.agiliq.com/projects/django-admin-cookbook/en/latest/edit_multiple_models.html).
 4. Free small-scale hosting of Python based applications including web apps at [Python Anywhere](https://www.pythonanywhere.com/).
 
 
