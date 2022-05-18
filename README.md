@@ -26,7 +26,7 @@ Some thoughts:
 
 3. The Django admin portal provides CRUD operations on database through a UI and obliviates a good deal of rationale for generating own data entry portal involving Auth. Further customization through this [tutorial](https://realpython.com/customize-django-admin-python/). Customizing forms to have multiple models in the same form - look at [this](https://books.agiliq.com/projects/django-admin-cookbook/en/latest/edit_multiple_models.html).
 4. Free small-scale hosting of Python based applications including web apps at [Python Anywhere](https://www.pythonanywhere.com/).
-
+5. Solving a probelm with models and forms: [my gist on the issue](https://gist.github.com/ShreyasKolpe/d5d7271d9fb3b27ce0abe76d3bf7f0bd)
 
 ## REST APIs
 
