@@ -4,6 +4,11 @@ This repo will contain code for the REST APIs to access the database containing 
 
 The database is being built privately and step-by-step. Once the backend and frontend are in place, the database is planned to be hosted online. Building on this, the database is intended to feed into a project to build knowledge graphs from the inscriptions in EC. This is planned as a prototype.
 
+## Access
+
+Access the prototype at https://epigraphiacarnatica.pythonanywhere.com/
+To use the APIs, use this as the base url to which to add the rest of the path.
+
 ## ER Schema
 
 The following ER schema has been developed:![er_schema](https://user-images.githubusercontent.com/13967444/163443220-3d36cb1a-63f4-43e0-9938-d8afbe544c8f.svg)
