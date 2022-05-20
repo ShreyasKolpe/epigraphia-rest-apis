@@ -385,7 +385,10 @@ def get_inscriptions_by_search(request):
         inscription_number = data.get('inscription_number', None)
 
         # Just chain filters according to the attributes given
-        inscription_queryset = models.InscriptionJoined.objects
+        if not source_text and not chapter and not inscription_number:
+            inscription_queryset = models.InscriptionJoined.objects.all()
+        else:
+            inscription_queryset = models.InscriptionJoined.objects
         if source_text:
             source_text_id = source_text.get('id', None)
             if source_text_id:
