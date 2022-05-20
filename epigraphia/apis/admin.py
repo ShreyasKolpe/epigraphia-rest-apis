@@ -11,10 +11,12 @@ from django.forms import models as forms_models
 
 
 class SourceTextAdminForm(forms.ModelForm):
+    # Special form for SourceTextAdmin since form needs to display extra-model field
     source_text_publication_year = forms.CharField(max_length=4, required=False,
                                                    help_text='Enter year in YYYY format, 0000 if not known')
 
     def __init__(self, *args, **kwargs):
+        # Converting publication_date to publication_year
         if 'instance' in kwargs:
             source_text_instance = kwargs['instance']
             source_text_initial = forms_models.model_to_dict(instance=source_text_instance, exclude=['source_text_publication_date', ])
@@ -33,12 +35,14 @@ class SourceTextAdminForm(forms.ModelForm):
         return datetime.strptime(publication_ymd, '%Y-%m-%d')
 
     def clean(self):
+        # Converting publication_year to publication_date
         publication_year = self.cleaned_data['source_text_publication_year']
         self.instance.source_text_publication_date =  self.get_publication_date_from_year(publication_year)
         super().clean()
 
     class Meta:
         model = models.SourceText
+        # These fields are not user editable and will be updated programmatically
         exclude = ('source_text_publication_date', 'created_by', 'last_modified_by', 'created_at', 'last_modified_at')
 
 
@@ -51,6 +55,7 @@ class SourceTextAdmin(admin.ModelAdmin):
 
     @admin.display(description='Number of Chapters')
     def get_number_of_chapters(self, obj):
+        # For displaying in list page
         count = models.SourceTextChapter.objects.filter(source_text_id=obj.source_text_id).count()
         url = reverse('admin:home_sourcetextchapter_changelist') + '?' + \
               urlencode({'source_text__source_text_id': f"{obj.source_text_id}"})
@@ -60,6 +65,7 @@ class SourceTextAdmin(admin.ModelAdmin):
         return False
 
     def save_model(self, request, obj, form, change):
+        # Save created by and modified by information
         if request.user.is_authenticated:
             user = request.user.username
 
@@ -77,6 +83,7 @@ class SourceTextChapterAdmin(admin.ModelAdmin):
 
     @admin.display(description='Number of Inscriptions')
     def get_number_of_inscriptions(self, obj):
+        # For displaying in list page
         count = models.Inscription.objects.filter(source_text_chapter_id=obj.source_text_chapter_id).count()
         url = reverse('admin:home_inscription_changelist') + '?' + \
               urlencode({'source_text_chapter__source_text_chapter_id': f"{obj.source_text_chapter_id}"})
@@ -86,6 +93,7 @@ class SourceTextChapterAdmin(admin.ModelAdmin):
         return False
 
     def save_model(self, request, obj, form, change):
+        # Save created by and modified by information
         if request.user.is_authenticated:
             user = request.user.username
 
@@ -126,6 +134,7 @@ class TransliterationInline(admin.StackedInline):
 
 
 class InscriptionAdminForm(forms.ModelForm):
+    # Special form for Inscription to have SourceText selector
     source_text = forms.ModelChoiceField(queryset=models.SourceText.objects.all(), required=True)
 
     class Meta:
@@ -141,6 +150,7 @@ class InscriptionAdmin(admin.ModelAdmin):
                      'source_text_chapter__source_text_chapter_title')
     list_per_page = 25
     list_filter = ('source_text_chapter__source_text__source_text_title',)
+    # Autocomplete for source text chapter for ease of use
     autocomplete_fields = ('source_text_chapter', )
     form = InscriptionAdminForm
 
@@ -168,4 +178,5 @@ class InscriptionAdmin(admin.ModelAdmin):
 admin.site.register(models.SourceText, SourceTextAdmin)
 admin.site.register(models.SourceTextChapter, SourceTextChapterAdmin)
 admin.site.register(models.Inscription, InscriptionAdmin)
+# Disable model object deletion from admin across all models
 admin.site.disable_action('delete_selected')
