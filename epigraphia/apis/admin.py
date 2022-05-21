@@ -105,7 +105,7 @@ class SourceTextChapterAdmin(admin.ModelAdmin):
 
 class TranslationInline(admin.StackedInline):
     model = models.Translation
-    extra = 1
+    max_num = 1
     exclude = ('created_by', 'last_modified_by', 'created_at', 'last_modified_at')
 
     def save_model(self, request, obj, form, change):
@@ -120,7 +120,7 @@ class TranslationInline(admin.StackedInline):
 
 class TransliterationInline(admin.StackedInline):
     model = models.Transliteration
-    extra = 1
+    max_num = 1
     exclude = ('created_by', 'last_modified_by', 'created_at', 'last_modified_at')
 
     def save_model(self, request, obj, form, change):
@@ -135,7 +135,17 @@ class TransliterationInline(admin.StackedInline):
 
 class InscriptionAdminForm(forms.ModelForm):
     # Special form for Inscription to have SourceText selector
-    source_text = forms.ModelChoiceField(queryset=models.SourceText.objects.all(), required=True)
+    source_text = forms.ModelChoiceField(queryset=models.SourceText.objects.all(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        # For populating the source text in the form when model is being changed
+        if 'instance' in kwargs:
+            inscription_instance = kwargs['instance']
+            if inscription_instance:
+                initial = forms_models.model_to_dict(instance=inscription_instance)
+                initial['source_text'] = models.SourceText.objects.get(source_text_id=inscription_instance.source_text_chapter.source_text.source_text_id);
+                kwargs['initial'] = initial
+        super().__init__(*args, **kwargs)
 
     class Meta:
         model = models.Inscription
