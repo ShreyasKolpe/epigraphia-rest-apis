@@ -112,6 +112,7 @@ for(var i = 0; i < textareaList.length; i++){
     const elem = textareaList[i]
     console.log(elem.id)
     elem.addEventListener("focus", function() { registerthis(elem.id) })
+    elem.setAttribute("spellcheck", "false")
 }
 
 
