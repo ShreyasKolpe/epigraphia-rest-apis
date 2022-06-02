@@ -17,5 +17,5 @@ from django.urls import path
 from cleaner import views
 
 urlpatterns = [
-    path('', views.cleaner_form, name='cleaner_form')
+    path('', views.Cleaner.as_view(), name='cleaner_form'),
 ]

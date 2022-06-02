@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseNotAllowed, Http404
+from django.http import JsonResponse
 from django.views import View
 from apis import models
 import json
@@ -16,7 +16,7 @@ class SourceTextView(View):
 
         title = data.get('title', '')
         if not title:
-            return HttpResponseBadRequest("The title cannot be blank")
+            return badRequestError("The title cannot be blank")
 
         # Check if object exists, if so do an update. Else, create new object
         try:
@@ -43,6 +43,7 @@ class SourceTextView(View):
         # Format the response and return it
         data = self.extract_source_text_attributes(source_text)
         response = {
+            "status": 200,
             "message": "Source text registered successfully",
             "data": data
         }
@@ -55,26 +56,34 @@ class SourceTextView(View):
             try:
                 source_text = models.SourceText.objects.get(source_text_id=text_id)
             except models.SourceText.DoesNotExist:
-                return Http404(f"Source text with id {text_id} not found")
+                return notFoundError(f"Source text with id {text_id} not found")
 
             # Format the response and return it
             data = self.extract_source_text_attributes(source_text)
-            return JsonResponse(data)
+            response = {
+                "status": 200,
+                "message": "Successfully found this record",
+                "data": data
+            }
+            return JsonResponse(response)
 
         else:
 
             # Get all objects, format the response and return it
             all_source_texts = models.SourceText.objects.all()
-            data = {
-                "source_texts": [{
+            data = [{
                     "id": source_text.source_text_id,
                     "title": source_text.source_text_title,
                     "subtitle": source_text.source_text_subtitle,
                     "series": source_text.source_text_series,
                     "volume": source_text.source_text_volume,
                 } for source_text in all_source_texts]
+            response = {
+                "status": 200,
+                "message": "Successfully found these records",
+                "data": data
             }
-            return JsonResponse(data)
+            return JsonResponse(response)
 
     def extract_source_text_attributes(self, source_text):
         # Helper method
@@ -90,6 +99,7 @@ class SourceTextView(View):
             "publication_date": source_text.source_text_publication_date
         }
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class SourceTextChapterView(View):
     def post(self, request):
@@ -97,10 +107,10 @@ class SourceTextChapterView(View):
 
         chapter_title = data.get('chapter_title', '')
         if not chapter_title:
-            return HttpResponseBadRequest("The chapter title cannot be blank")
+            return badRequestError("The chapter title cannot be blank")
         source_text = data.get('source_text', {})
         if not source_text:
-            return HttpResponseBadRequest("Need source text information for registering")
+            return badRequestError("Need source text information for registering")
 
         # Check if chapter already exists, if so then do an update. Else create new object
         try:
@@ -131,9 +141,9 @@ class SourceTextChapterView(View):
 
             source_texts = list(query_set)
             if len(source_texts) == 0:
-                return HttpResponseBadRequest("No matching source text found, reexamine the attributes")
+                return badRequestError("No matching source text found, reexamine the attributes")
             elif len(source_texts) > 1:
-                return HttpResponseBadRequest("Found more than one matching source text, reexamine the attributes")
+                return badRequestError("Found more than one matching source text, reexamine the attributes")
 
             found_source_text = source_texts[0]
 
@@ -144,6 +154,7 @@ class SourceTextChapterView(View):
         # Format the response and return it
         response_data = extract_chapter_attributes(source_text_chapter)
         response = {
+            "status": 200,
             "message": "Chapter registered successfully",
             "data": response_data
         }
@@ -154,11 +165,16 @@ class SourceTextChapterView(View):
         try:
             source_text_chapter = models.SourceTextChapter.objects.get(source_text_chapter_id=chapter_id)
         except models.SourceTextChapter.DoesNotExist:
-            return Http404(f"Source text chapter with id {chapter_id} not found")
+            return notFoundError(f"Source text chapter with id {chapter_id} not found")
 
         # Format the response and return it
         data = extract_chapter_attributes(source_text_chapter)
-        return JsonResponse(data)
+        response = {
+            "status": 200,
+            "message": "Successfully found this record",
+            "data": data
+        }
+        return JsonResponse(response)
 
 
 @method_decorator(csrf_exempt)
@@ -171,8 +187,8 @@ def get_source_text_chapters_by_search(request):
 
         query_set = models.SourceTextChapter.objects
         if text_id:
-            found_chapter = query_set.get(source_text__source_text_id=text_id)
-            found_chapters = [found_chapter, ]
+            query_set = query_set.filter(source_text__source_text_id=text_id)
+            # found_chapters = [found_chapter, ]
         else:
             title = source_text.get('title', '')
             subtitle = source_text.get('subtitle', '')
@@ -187,19 +203,20 @@ def get_source_text_chapters_by_search(request):
             if subtitle:
                 query_set = query_set.filter(source_text_source_text_subtitle__icontains=subtitle)
 
-            found_chapters = list(query_set)
+        found_chapters = list(query_set)
 
         response_data = []
         for chapter in found_chapters:
             response_data.append(extract_chapter_attributes(chapter))
         response = {
+            "status":200,
             "message": "Successfully found these records",
             "data": response_data
         }
         return JsonResponse(response)
 
     else:
-        return HttpResponseNotAllowed()
+        return notAllowedError("Method not allowed")
 
 
 def extract_chapter_attributes(source_text_chapter):
@@ -216,6 +233,7 @@ def extract_chapter_attributes(source_text_chapter):
         }
     }
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class InscriptionView(View):
     def post(self, request):
@@ -230,7 +248,7 @@ class InscriptionView(View):
         if not inscription_id:
             # and neither are there chapter and inscription_number,
             if not chapter or not inscription_number:
-                return HttpResponseBadRequest("Need chapter information and inscription number for registration")
+                return badRequestError("Need chapter information and inscription number for registration")
             # else, use chapter and inscription number
             else:
                 # check if inscription exists already
@@ -267,9 +285,9 @@ class InscriptionView(View):
 
                         chapters = list(chapter_queryset)
                         if not chapters:
-                            return HttpResponseBadRequest("Matching chapter not found")
+                            return badRequestError("Matching chapter not found")
                         if len(chapters) > 1:
-                            return HttpResponseBadRequest("Matches more than one chapter")
+                            return badRequestError("Matches more than one chapter")
                         chapter = chapters[0]
 
                     inscription.source_text_chapter = chapter
@@ -279,7 +297,7 @@ class InscriptionView(View):
             try:
                 inscription = models.Inscription.objects.get(inscription_id=inscription_id)
             except models.Inscription.DoesNotExist:
-                return Http404(f"Inscription with id {inscription_id} does not exist")
+                return notFoundError(f"Inscription with id {inscription_id} does not exist")
 
             # It is possible to set the chapter and inscription_number since that information is not being used to id
             inscription.source_text_inscription_number = inscription_number
@@ -296,9 +314,9 @@ class InscriptionView(View):
 
                     chapters = list(chapter_queryset)
                     if not chapters:
-                        return HttpResponseBadRequest("Matching chapter not found")
+                        return badRequestError("Matching chapter not found")
                     if len(chapters) > 1:
-                        return HttpResponseBadRequest("Matches more than one chapter")
+                        return badRequestError("Matches more than one chapter")
                     chapter = chapters[0]
 
                 inscription.source_text_chapter = chapter
@@ -357,10 +375,12 @@ class InscriptionView(View):
                 "transliteration_footer": transliteration.footnotes
         }
         response = {
-            "message": "Successfully registered",
+            "status": 200,
+            "message": "Successfully registered translation and/or transliteration",
             "data": response_data
         }
         return JsonResponse(response)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class InscriptionJoinedView(View):
@@ -369,10 +389,15 @@ class InscriptionJoinedView(View):
         try:
             inscription = models.InscriptionJoined.objects.get(inscription_id=inscription_id)
         except models.InscriptionJoined.DoesNotExist:
-            return Http404(f"Inscription with id {inscription_id} not found")
+            return notFoundError(f"Inscription with id {inscription_id} not found")
 
         data = extract_inscription_attributes(inscription)
-        return JsonResponse(data)
+        response = {
+            "status": 200,
+            "message": "Successfully found this record",
+            "data": data
+        }
+        return JsonResponse(response)
 
 
 @method_decorator(csrf_exempt)
@@ -380,57 +405,64 @@ def get_inscriptions_by_search(request):
     if request.method == 'POST':
 
         data = json.loads(request.body.decode('utf-8'))
-        source_text = data.get('source_text', {})
-        chapter = data.get('chapter', '')
-        inscription_number = data.get('inscription_number', None)
 
-        # Just chain filters according to the attributes given
-        if not source_text and not chapter and not inscription_number:
-            inscription_queryset = models.InscriptionJoined.objects.all()
-        else:
-            inscription_queryset = models.InscriptionJoined.objects
-        if source_text:
-            source_text_id = source_text.get('id', None)
-            if source_text_id:
-                inscription_queryset = inscription_queryset.filter(source_text_id=source_text_id)
-            else:
-                title = source_text.get('title', '')
-                subtitle = source_text.get('subtitle', '')
-                series = source_text.get('series', '')
-                volume = source_text.get('volume', '')
-                if title:
-                    inscription_queryset = inscription_queryset.filter(source_text_title__icontains=title)
-                if series:
-                    inscription_queryset = inscription_queryset.filter(source_text_series__icontains=series)
-                if volume:
-                    inscription_queryset = inscription_queryset.filter(source_text_volume__icontains=volume)
-                if subtitle:
-                    inscription_queryset = inscription_queryset.filter(ource_text_subtitle__icontains=subtitle)
-
-        if chapter:
-            source_text_chapter_id = chapter.get('id', None)
-            if source_text_chapter_id:
-                inscription_queryset = inscription_queryset.filter(source_text_chapter_id=source_text_chapter_id)
-            else:
-                title = chapter.get('title', '')
-                if title:
-                    inscription_queryset = inscription_queryset.filter(source_text_chapter_title__icontains=source_text_chapter_id)
-
-        if inscription_number:
-            inscription_queryset = inscription_queryset.filter(source_text_inscription_number=inscription_number)
-
-        inscriptions = list(inscription_queryset)
+        inscriptions = search_inscriptions(data)
         response_data = []
         for inscription in inscriptions:
             response_data.append(extract_inscription_attributes(inscription))
         response = {
+            "status": 200,
             "message": "Successfully found these records",
             "data": response_data
         }
         return JsonResponse(response)
 
     else:
-        return HttpResponseNotAllowed("Method not allowed")
+        return notAllowedError("Method not allowed")
+
+
+def search_inscriptions(data):
+    source_text = data.get('source_text', {})
+    chapter = data.get('chapter', '')
+    inscription_number = data.get('inscription_number', None)
+
+    # Just chain filters according to the attributes given
+    if not source_text and not chapter and not inscription_number:
+        inscription_queryset = models.InscriptionJoined.objects.all()
+    else:
+        inscription_queryset = models.InscriptionJoined.objects
+    if source_text:
+        source_text_id = source_text.get('id', None)
+        if source_text_id:
+            inscription_queryset = inscription_queryset.filter(source_text_id=source_text_id)
+        else:
+            title = source_text.get('title', '')
+            subtitle = source_text.get('subtitle', '')
+            series = source_text.get('series', '')
+            volume = source_text.get('volume', '')
+            if title:
+                inscription_queryset = inscription_queryset.filter(source_text_title__icontains=title)
+            if series:
+                inscription_queryset = inscription_queryset.filter(source_text_series__icontains=series)
+            if volume:
+                inscription_queryset = inscription_queryset.filter(source_text_volume__icontains=volume)
+            if subtitle:
+                inscription_queryset = inscription_queryset.filter(ource_text_subtitle__icontains=subtitle)
+
+    if chapter:
+        source_text_chapter_id = chapter.get('id', None)
+        if source_text_chapter_id:
+            inscription_queryset = inscription_queryset.filter(source_text_chapter_id=source_text_chapter_id)
+        else:
+            title = chapter.get('title', '')
+            if title:
+                inscription_queryset = inscription_queryset.filter(
+                    source_text_chapter_title__icontains=source_text_chapter_id)
+
+    if inscription_number:
+        inscription_queryset = inscription_queryset.filter(source_text_inscription_number=inscription_number)
+
+    return list(inscription_queryset)
 
 
 def extract_inscription_attributes(inscription):
@@ -460,3 +492,24 @@ def extract_inscription_attributes(inscription):
         "transliteration": inscription.transliteration,
         "transliteration_footer": inscription.transliteration_footnotes
     }
+
+
+def notAllowedError(message):
+    return JsonResponse({
+        "status": 403,
+        "message": message
+    }, status=403)
+
+
+def notFoundError(message):
+    return JsonResponse({
+        "status": 404,
+        "message": message
+    }, status=404)
+
+
+def badRequestError(message):
+    return JsonResponse({
+        "status": 400,
+        "message": message
+    }, status=400)

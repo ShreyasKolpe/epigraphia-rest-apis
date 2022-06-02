@@ -67,6 +67,7 @@ Response:
 
 ```
 {
+    "status": 200,
     "message": "Source text registered successfully",
     "data": {
         "id": ,
@@ -102,7 +103,9 @@ Response:
 
 ```
 {
-    "source_text": {
+    "status": 200,
+    "message": "Successfulluy found this record"
+    "data":  {
         "id": ,
         "title": "",
         "series": "",
@@ -111,7 +114,7 @@ Response:
         "publisher": "",
         "publication_place": "",
         "publication_year": ""
-    }
+    }    
 }
 ```
 
@@ -135,6 +138,8 @@ Response:
 
 ```
 {
+    "status": 200,
+    "message": "Successfully found these records",
     "source_texts": [ 
         {
             "id": ,
@@ -176,6 +181,7 @@ Response:
 
 ```
 {
+    "status": 200,
     "message": "Chapter registered successfully",
     "data": {
         "chapter_id": ,
@@ -211,14 +217,18 @@ Response:
 
 ```
 {
-    "chapter_id": ,
-    "chapter_title": "",
-    "source_text": {
-        "id": ,
-        "title": "",
-        "subtitle": "",
-        "series": "",
-        "volume": "",
+    "status": 200,
+    "message": "Successfully found this record",
+    "data": {
+        "chapter_id": ,
+        "chapter_title": "",
+        "source_text": {
+            "id": ,
+            "title": "",
+            "subtitle": "",
+            "series": "",
+            "volume": "",
+        }
     }
 }
 ```
@@ -254,6 +264,7 @@ Response:
 
 ```
 {
+    "status": 200,
     "message": "Successfully found these records",
     "data": [
         {
@@ -303,6 +314,7 @@ Response:
 
 ```
 {
+    "status": 200,
     "message": "Successfully registered translation and/or transliteration",
     "data": {
         "source_text": {
@@ -348,35 +360,37 @@ Request:
 GET /api/v1/inscription/<inscription_id:int>
 ```
 
-**Note**: To identify `source_text` provide either the `id` or a combination of the other attributes. Some such information is mandatory. `chapter_title` and `inscription_number` are mandatory.
-
 Response:
 
 ```
 {
-    "source_text": {
-        "id": ,
-        "title": "",
-        "subtitle": "",
-        "series": "",
-        "volume": ""
-        "author": "",
-        "publisher": "",
-        "publication_place": "",
-        "publication_date": ""
-    },
-    "chapter": {
-        "id": ,
-        "title": "",
+    "status": 200,
+    "message": "Successfully found this record",
+    "data": {
+        "source_text": {
+            "id": ,
+            "title": "",
+            "subtitle": "",
+            "series": "",
+            "volume": ""
+            "author": "",
+            "publisher": "",
+            "publication_place": "",
+            "publication_date": ""
+        },
+        "chapter": {
+            "id": ,
+            "title": "",
+        }
+        "inscription_id": ,
+        "inscription_number": "",
+        "translation_header": "",
+        "translation": "",
+        "translation_footer": "",
+        "transliteration_header": "",
+        "transliteration": "",
+        "transliteration_footer": ""
     }
-    "inscription_id": ,
-    "inscription_number": "",
-    "translation_header": "",
-    "translation": "",
-    "translation_footer": "",
-    "transliteration_header": "",
-    "transliteration": "",
-    "transliteration_footer": ""
 }
 ```
 
@@ -415,6 +429,7 @@ Response:
 
 ```
 {
+    "status": 200,
     "message": "Successfully found these records"
     "data": [
         {
