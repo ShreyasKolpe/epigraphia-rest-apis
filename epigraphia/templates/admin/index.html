@@ -1,0 +1,27 @@
+{% extends "admin/index.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">
+<style type="text/css">
+    #content-extra {
+        display: inline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+</div>
+<div id="content-extra" class="module">
+    <table>
+        <tr>
+            <th>
+            <a href="/cleaner">Data Cleaning Tool</a>
+            </th>
+        </tr>
+    </table>
+</div>
+{% endblock %}
