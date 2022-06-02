@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <h3>Welcome to Epigraphia Carnatica</h3>
+
+    <form action="/inscription/search" method="post">
+        {% csrf_token %}
+        <select id="sourceTextSelector" name="sourceText" onchange="updateChapterSelection()">
+            {% for text in source_texts.data %}
+                <option value="{{text.id}}">{{ text.title }}, {{ text.series }} {{ text.volume }}</option>
+            {% endfor %}
+        </select>
+        <select id="sourceTextChapterSelector" name="sourceTextChapter">
+        </select>
+        <input type="submit" value="Go!">
+    </form>
+
+    <script type="text/javascript">
+        <!--const elem = document.getElementById("sourceTextSelector")-->
+        <!--var list = {{source_texts}}-->
+        <!--console.log(list)-->
+        document.getElementById("sourceTextSelector").selectedIndex = -1;
+
+        function updateChapterSelection() {
+            const sourceTextElem = document.getElementById("sourceTextSelector")
+            const sourceTextChapterElem = document.getElementById("sourceTextChapterSelector")
+            var L = sourceTextChapterElem.options.length - 1;
+                for(var i = L; i >= 0; i--) {
+                     sourceTextChapterElem.remove(i);
+            }
+            if(sourceTextElem.selectedIndex != -1) {
+                var value = sourceTextElem.options[sourceTextElem.selectedIndex].value
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("post", "/api/v1/source_text_chapter/search", true)
+                xhttp.responseType = "json"
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                        response = xhttp.response
+                        for(var i = 0; i < response.data.length; ++i) {
+                            <!--console.log(response.data[i])-->
+                            const option = document.createElement("option")
+                            option.value = response.data[i].chapter_id
+                            option.innerHTML = response.data[i].chapter_title
+                            sourceTextChapterElem.appendChild(option)
+                        }
+                        sourceTextChapterElem.selectedIndex = -1
+                    }
+                }
+                xhttp.send("{\"source_text\": {\"id\":" + value + " }}")
+            }
+        }
+    </script>
+</body>
+</html>
