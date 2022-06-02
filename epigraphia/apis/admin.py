@@ -154,7 +154,7 @@ class InscriptionAdminForm(forms.ModelForm):
 
 
 class InscriptionAdmin(admin.ModelAdmin):
-    inlines = [TranslationInline, TransliterationInline]
+    inlines = [TransliterationInline, TranslationInline]
     list_display = ('get_text_title', 'get_chapter_title', 'source_text_inscription_number')
     search_fields = ('source_text_chapter__source_text__source_text_title',
                      'source_text_chapter__source_text_chapter_title')
