@@ -1,16 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
-from cleaner import forms
+from . import forms
 from epiclean import clean_epigraphia
-from django.http import HttpResponseForbidden
+
 # Create your views here.
 
 
 class Cleaner(View):
+
     def get(self, request):
 
         if not request.user.is_authenticated:
-            return HttpResponseForbidden('You need to log in through admin')
+            return redirect('/admin/login/?next=/cleaner/')
 
         form = forms.CleanerForm()
         context = {
@@ -21,7 +22,7 @@ class Cleaner(View):
     def post(self, request):
 
         if not request.user.is_authenticated:
-            return HttpResponseForbidden('You need to log in through admin')
+            return redirect('/admin/login/?next=/cleaner/')
 
         form = forms.CleanerForm(request.POST)
         if form.is_valid():

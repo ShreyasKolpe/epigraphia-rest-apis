@@ -1,0 +1,36 @@
+{% extends "admin/base_site.html" %}
+<html lang="en">
+{% comment %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0">
+    <title>Data Cleaning Tool</title>
+    <style>
+        form {
+            display: inline-block;
+        }
+    </style>
+</head>
+{% endcomment %}
+<body>
+
+    {% block branding %}
+    <h1 id="app-name">{{ site_header|default:_('Data Cleaning Tool') }}</a></h1>
+    {% endblock %}
+
+    {% block content %}
+    <form method="post" action="#">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Go!">
+    </form>
+    <br/>
+    {% if output_str %}
+    <p>{{ output_str }}</p>
+    {% endif %}
+    {% if error_msg %}
+    <p style='color: red'>{{ error_msg }}</p>
+    {% endif %}
+    {%  endblock %}
+</body>
+</html>
