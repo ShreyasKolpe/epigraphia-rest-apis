@@ -4,11 +4,11 @@
 {% block extrastyle %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
-{* comment *}
+{% comment %}
 This special keyboard for entering some characters from the ISO 15919 transliteration standard for
 Indic languages is a project at https://github.com/ShreyasKolpe/indic-character-input.
 It was intended to develop a custom web component. For now the JS code is injected as is.
-{* endcomment *}
+{% endcomment %}
 <style type="text/css">
     indic-text-input {
         position: fixed;

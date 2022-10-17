@@ -57,7 +57,7 @@ class SourceTextAdmin(admin.ModelAdmin):
     def get_number_of_chapters(self, obj):
         # For displaying in list page
         count = models.SourceTextChapter.objects.filter(source_text_id=obj.source_text_id).count()
-        url = reverse('admin:home_sourcetextchapter_changelist') + '?' + \
+        url = reverse('admin:apis_sourcetextchapter_changelist') + '?' + \
               urlencode({'source_text__source_text_id': f"{obj.source_text_id}"})
         return format_html('<a href={}>{}</a>', url, count)
 
@@ -85,7 +85,7 @@ class SourceTextChapterAdmin(admin.ModelAdmin):
     def get_number_of_inscriptions(self, obj):
         # For displaying in list page
         count = models.Inscription.objects.filter(source_text_chapter_id=obj.source_text_chapter_id).count()
-        url = reverse('admin:home_inscription_changelist') + '?' + \
+        url = reverse('admin:apis_inscription_changelist') + '?' + \
               urlencode({'source_text_chapter__source_text_chapter_id': f"{obj.source_text_chapter_id}"})
         return format_html('<a href={}>{}</a>', url, count)
 
