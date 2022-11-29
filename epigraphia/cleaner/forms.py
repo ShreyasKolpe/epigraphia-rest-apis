@@ -8,3 +8,5 @@ class CleanerForm(forms.Form):
     process_o = forms.BooleanField(label='Choose whether to find and substitute ō', required=False)
     process_s = forms.BooleanField(label='Choose whether to find and substitute the common sequence śrī', required=False)
     process_n = forms.BooleanField(label='Choose whether to smartly process anunasika-consonant clusters', required=False)
+    process_jn = forms.BooleanField(label='Choose whether to find and substitute (probable) ñ', required=False)
+
