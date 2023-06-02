@@ -141,6 +141,8 @@ class InscriptionJoined(models.Model):
     source_text_chapter_title = models.TextField()
     source_text_inscription_number = models.IntegerField()
     inscription_id = models.IntegerField(primary_key=True)
+    location_name = models.TextField(blank=True, null=True)
+    coordinates = gis_models.PointField()
     translation_header = models.TextField(blank=True, null=True)
     translation = models.TextField(blank=True, null=True)
     translation_footnotes = models.TextField(blank=True, null=True)

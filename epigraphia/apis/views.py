@@ -484,6 +484,10 @@ def extract_inscription_attributes(inscription):
             "title": inscription.source_text_chapter_title,
         },
         "inscription_id": inscription.inscription_id,
+        "location": {
+            "name": inscription.location_name,
+            "coordinates": [inscription.coordinates[1], inscription.coordinates[0]] if inscription.coordinates else None
+        },
         "inscription_number": inscription.source_text_inscription_number,
         "translation_header": inscription.translation_header,
         "translation": inscription.translation,
