@@ -1,1 +1,2 @@
 epiclean==0.0.2
+django-map-widgets

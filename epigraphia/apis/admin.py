@@ -6,6 +6,8 @@ from django.utils.html import format_html
 from django import forms
 from datetime import datetime
 from django.forms import models as forms_models
+from mapwidgets.widgets import GooglePointFieldWidget
+import django.contrib.gis.db.models as gis_models
 
 # Register your models here.
 
@@ -149,13 +151,13 @@ class InscriptionAdminForm(forms.ModelForm):
 
     class Meta:
         model = models.Inscription
-        fields = ('source_text', 'source_text_chapter', 'source_text_inscription_number')
+        fields = ('source_text', 'source_text_chapter', 'location', 'source_text_inscription_number')
         exclude = ('created_by', 'last_modified_by', 'created_at', 'last_modified_at')
 
 
 class InscriptionAdmin(admin.ModelAdmin):
     inlines = [TransliterationInline, TranslationInline]
-    list_display = ('get_text_title', 'get_chapter_title', 'source_text_inscription_number')
+    list_display = ('get_text_title', 'get_chapter_title', 'source_text_inscription_number', 'location')
     search_fields = ('source_text_chapter__source_text__source_text_title',
                      'source_text_chapter__source_text_chapter_title')
     list_per_page = 25
@@ -185,8 +187,29 @@ class InscriptionAdmin(admin.ModelAdmin):
             super().save_model(request, obj, form, change)
 
 
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ('__str__', )
+    list_per_page = 25
+    search_fields = ('location_name',)
+    exclude = ('created_by', 'last_modified_by', 'created_at', 'last_modified_at')
+    formfield_overrides = {
+        gis_models.PointField: {"widget": GooglePointFieldWidget}
+    }
+
+    def save_model(self, request, obj, form, change):
+        # Save created by and modified by information
+        if request.user.is_authenticated:
+            user = request.user.username
+
+            if not change:
+                obj.created_by = user
+            obj.last_modified_by = user
+            super().save_model(request, obj, form, change)
+
+
 admin.site.register(models.SourceText, SourceTextAdmin)
 admin.site.register(models.SourceTextChapter, SourceTextChapterAdmin)
 admin.site.register(models.Inscription, InscriptionAdmin)
+admin.site.register(models.Location, LocationAdmin)
 # Disable model object deletion from admin across all models
 admin.site.disable_action('delete_selected')
