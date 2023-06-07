@@ -4,3 +4,4 @@ venv/
 **/migrations
 **/__pycache__/
 static_assets/
+epigraphia/settings.py

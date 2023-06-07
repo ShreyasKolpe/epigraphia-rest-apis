@@ -193,7 +193,17 @@ class LocationAdmin(admin.ModelAdmin):
     search_fields = ('location_name',)
     exclude = ('created_by', 'last_modified_by', 'created_at', 'last_modified_at')
     formfield_overrides = {
-        gis_models.PointField: {"widget": GooglePointFieldWidget}
+        gis_models.PointField: {"widget": GooglePointFieldWidget(settings = {
+            "GooglePointFieldWidget": (
+                                        ("zoom", 5),
+                                        ("mapCenterLocationName", "india"),
+                                        ("GooglePlaceAutocompleteOptions", {'componentRestrictions': {'country': 'in'}}),
+                                        ("markerFitZoom", 12),
+                                        ("scrollWheel", False),
+                                        ("streetViewControl", False),
+                                      ),
+            "GOOGLE_MAP_API_KEY": ""
+        })}
     }
 
     def save_model(self, request, obj, form, change):
