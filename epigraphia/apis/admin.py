@@ -13,13 +13,13 @@ import django.contrib.gis.db.models as gis_models
 
 
 class SourceTextAdminForm(forms.ModelForm):
-    # Special form for SourceTextAdmin since form needs to display extra-model field
+    # Special form for SourceTextAdmin since form needs to display an extra-model field
     source_text_publication_year = forms.CharField(max_length=4, required=False,
                                                    help_text='Enter year in YYYY format, 0000 if not known')
 
     def __init__(self, *args, **kwargs):
         # Converting publication_date to publication_year
-        if 'instance' in kwargs:
+        if 'instance' in kwargs and kwargs['instance']:
             source_text_instance = kwargs['instance']
             source_text_initial = forms_models.model_to_dict(instance=source_text_instance, exclude=['source_text_publication_date', ])
             source_text_initial['source_text_publication_year'] = \
@@ -38,8 +38,9 @@ class SourceTextAdminForm(forms.ModelForm):
 
     def clean(self):
         # Converting publication_year to publication_date
-        publication_year = self.cleaned_data['source_text_publication_year']
-        self.instance.source_text_publication_date =  self.get_publication_date_from_year(publication_year)
+        if self.cleaned_data['source_text_publication_year']:
+            publication_year = self.cleaned_data['source_text_publication_year']
+            self.instance.source_text_publication_date = self.get_publication_date_from_year(publication_year)
         super().clean()
 
     class Meta:
@@ -193,7 +194,7 @@ class LocationAdmin(admin.ModelAdmin):
     search_fields = ('location_name',)
     exclude = ('created_by', 'last_modified_by', 'created_at', 'last_modified_at')
     formfield_overrides = {
-        gis_models.PointField: {"widget": GooglePointFieldWidget(settings = {
+        gis_models.PointField: {"widget": GooglePointFieldWidget(settings={
             "GooglePointFieldWidget": (
                                         ("zoom", 5),
                                         ("mapCenterLocationName", "india"),
@@ -201,8 +202,7 @@ class LocationAdmin(admin.ModelAdmin):
                                         ("markerFitZoom", 12),
                                         ("scrollWheel", False),
                                         ("streetViewControl", False),
-                                      ),
-            "GOOGLE_MAP_API_KEY": ""
+                                      )
         })}
     }
 
