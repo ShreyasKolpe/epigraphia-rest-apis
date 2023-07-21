@@ -14,6 +14,7 @@
 </head>
 <body>
 
+    {% load filter_utils %}
     <div class="container-fluid">
         <div class="row">
             <div id="source" class="col-lg-3">
@@ -26,7 +27,7 @@
                     By {{ inscription.source_text.author }}
                     <br/>
                     Published by {{ inscription.source_text.publisher }}, {{ inscription.source_text.publication_place }}
-                    in {{ inscription.source_text.publication_date }}
+                    in {{ inscription.source_text.publication_date|split:"-"|first }}
                 </div>
                 <div id="sourceTextChapter" style="display: block">
                     <h5>Chapter</h5>
@@ -48,33 +49,33 @@
                 <h4>Inscription No. {{ inscription.inscription_number }}</h4>
                 <h5>Transliteration</h5>
                 {% if inscription.transliteration_header %}
-                <em>{{ inscription.transliteration_header }}</em>
+                <em>{{ inscription.transliteration_header|linebreaksbr }}</em>
                     <br/>
                     <br/>
                 {% endif %}
 
-                {{ inscription.transliteration }}
+                {{ inscription.transliteration|linebreaksbr }}
                 <br/>
                 <br/>
 
                 {% if inscription.transliteration_footnotes %}
-                <em>{{ inscription.transliteration_footnotes }}</em>
+                <em>{{ inscription.transliteration_footnotes|linebreaksbr }}</em>
                     <br/>
                 {% endif %}
                 <br/>
                 <h5>Translation</h5>
                 {% if inscription.translation_header %}
-                <em>{{ inscription.translation_header }}</em>
+                <em>{{ inscription.translation_header|linebreaksbr }}</em>
                     <br/>
                     <br/>
                 {% endif %}
 
-                {{ inscription.translation }}
+                {{ inscription.translation|linebreaksbr }}
                 <br/>
                 <br/>
 
                 {% if inscription.translation_footnotes %}
-                <em>{{ inscription.translation_footnotes }}</em>
+                <em>{{ inscription.translation_footnotes|linebreaksbr }}</em>
                     <br/>
                 {% endif %}
             </div>
