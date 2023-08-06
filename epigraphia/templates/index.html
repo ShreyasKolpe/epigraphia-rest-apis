@@ -53,7 +53,7 @@
         const location_data = locations.data
         location_data.forEach(function(value) {
             var marker = L.marker(value.coordinates).addTo(map)
-            marker.bindPopup(value.location_name)
+            marker.bindPopup("<a href='/location/"+value.location_id+"'>"+value.location_name+"</a>")
         })
     </script>
     <script type="text/javascript">

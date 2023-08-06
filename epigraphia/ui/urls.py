@@ -19,6 +19,7 @@ from ui import views
 
 urlpatterns = [
     path('', views.home),
+    path('location/<int:location_id>', views.inscriptions_by_location),
     path('inscription/<int:inscription_id>', views.inscription),
     path('inscription/search', views.inscription_search)
 ]
