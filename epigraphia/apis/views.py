@@ -235,6 +235,47 @@ def extract_chapter_attributes(source_text_chapter):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
+class LocationView(View):
+    def get(self, request, location_id=None):
+
+        if location_id:
+
+            try:
+                location = models.Location.objects.get(location_id=location_id)
+            except models.Location.DoesNotExist:
+                return notFoundError(f"Location with id {location_id} not found")
+
+            # Format the response and return it
+            data = extract_location_attributes(location)
+            response = {
+                "status": 200,
+                "message": "Successfully found this record",
+                "data": data
+            }
+            return JsonResponse(response)
+
+        else:
+
+            all_locations = models.Location.objects.all()
+
+            data = [extract_location_attributes(location) for location in all_locations]
+            response = {
+                "status": 200,
+                "message": "Successfully found these records",
+                "data": data
+            }
+            return JsonResponse(response)
+
+
+def extract_location_attributes(location):
+    return {
+        "location_id": location.location_id,
+        "location_name": location.location_name,
+        "coordinates": [location.coordinates[1], location.coordinates[0]] if location.coordinates else None
+    }
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 class InscriptionView(View):
     def post(self, request):
 
@@ -341,7 +382,7 @@ class InscriptionView(View):
             transliteration = models.Transliteration.objects.get(inscription__inscription_id=inscription.inscription_id)
         except models.Transliteration.DoesNotExist:
             transliteration = models.Transliteration()
-            transliteration.inscription=inscription
+            transliteration.inscription = inscription
         transliteration.header = data.get('transliteration_header', '')
         transliteration.transliteration = data.get('transliteration', '')
         transliteration.footnotes = data.get('transliteration_footer', '')
@@ -369,10 +410,10 @@ class InscriptionView(View):
                 "inscription_number": inscription.source_text_inscription_number,
                 "translation_header": translation.header,
                 "translation": translation.translation,
-                "translation_footer": translation.footnotes,
+                "translation_footnotes": translation.footnotes,
                 "transliteration_header": transliteration.header,
                 "transliteration": transliteration.transliteration,
-                "transliteration_footer": transliteration.footnotes
+                "transliteration_footnotes": transliteration.footnotes
         }
         response = {
             "status": 200,
@@ -491,10 +532,10 @@ def extract_inscription_attributes(inscription):
         "inscription_number": inscription.source_text_inscription_number,
         "translation_header": inscription.translation_header,
         "translation": inscription.translation,
-        "translation_footer": inscription.translation_footnotes,
+        "translation_footnotes": inscription.translation_footnotes,
         "transliteration_header": inscription.transliteration_header,
         "transliteration": inscription.transliteration,
-        "transliteration_footer": inscription.transliteration_footnotes
+        "transliteration_footnotes": inscription.transliteration_footnotes
     }
 
 

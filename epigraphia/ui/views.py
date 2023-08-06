@@ -9,8 +9,10 @@ import json
 def home(request):
 
     inscription_json = views.SourceTextView().get(request).content
+    locations_json = views.LocationView().get(request).content
     context = {
-        'source_texts': json.loads(inscription_json.decode('utf-8'))
+        'source_texts': json.loads(inscription_json.decode('utf-8')),
+        'all_locations': json.loads(locations_json.decode('utf-8'))
     }
 
     return render(request, 'index.html', context)

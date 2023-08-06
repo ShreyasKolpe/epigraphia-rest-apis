@@ -25,6 +25,9 @@ urlpatterns = [
     path('source_text_chapter/<int:chapter_id>', views.SourceTextChapterView.as_view()),
     path('source_text_chapter/search', views.get_source_text_chapters_by_search),
 
+    path('location', views.LocationView.as_view()),
+    path('location/<int:location_id>', views.LocationView.as_view()),
+
     path('inscription', views.InscriptionView.as_view()),
     path('inscription/<int:inscription_id>', views.InscriptionJoinedView.as_view()),
     path('inscription/search', views.get_inscriptions_by_search),
