@@ -41,7 +41,7 @@ def inscription(request, inscription_id):
     }
     inscriptions_at_location = views.search_inscriptions(inscription_search_object)
     inscriptions_at_location = list(inscriptions_at_location)
-    inscriptions_at_location_list = extract_inscription_id_and_number_attributes(inscriptions_in_chapter)
+    inscriptions_at_location_list = extract_inscription_id_and_number_attributes(inscriptions_at_location)
 
     context = {
         'inscription': inscription_from_json,
