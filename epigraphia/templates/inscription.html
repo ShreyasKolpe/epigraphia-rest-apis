@@ -38,11 +38,20 @@
                     {% if inscription.location.name %}
                         <div id="map" style="height: 400px"></div>
                     {% endif %}
+                    {% if inscriptions_at_location %}
+                        <strong>Inscriptions at same location: </strong>
+                        <div id="location_navbar">
+                            {% for inscription in inscriptions_at_location|dictsort:"inscription_number" %}
+                                <a href="/inscription/{{ inscription.inscription_id }}">{{ inscription.inscription_number }}</a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             <div id="inscription" class="col-lg-9">
+                <strong>Inscriptions in chapter: </strong>
                 <div id="inscription_navbar">
-                    {% for inscription in other_inscriptions %}
+                    {% for inscription in inscriptions_in_chapter|dictsort:"inscription_number" %}
                         <a href="/inscription/{{ inscription.inscription_id }}">{{ inscription.inscription_number }}</a>
                     {% endfor %}
                 </div>

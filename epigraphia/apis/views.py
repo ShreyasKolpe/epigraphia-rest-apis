@@ -464,14 +464,16 @@ def get_inscriptions_by_search(request):
 
 def search_inscriptions(data):
     source_text = data.get('source_text', {})
-    chapter = data.get('chapter', '')
+    chapter = data.get('chapter', {})
+    location = data.get('location', {})
     inscription_number = data.get('inscription_number', None)
 
     # Just chain filters according to the attributes given
-    if not source_text and not chapter and not inscription_number:
+    if not source_text and not chapter and not location and not inscription_number:
         inscription_queryset = models.InscriptionJoined.objects.all()
     else:
         inscription_queryset = models.InscriptionJoined.objects
+
     if source_text:
         source_text_id = source_text.get('id', None)
         if source_text_id:
@@ -500,6 +502,16 @@ def search_inscriptions(data):
                 inscription_queryset = inscription_queryset.filter(
                     source_text_chapter_title__icontains=source_text_chapter_id)
 
+    if location:
+        location_id = location.get('id', None)
+        if location_id:
+            inscription_queryset = inscription_queryset.filter(location_id=location_id)
+        else:
+            location_name = location.get('name', '')
+            if location_name:
+                inscription_queryset = inscription_queryset.filter(
+                    location_name__icontains=location_name)
+
     if inscription_number:
         inscription_queryset = inscription_queryset.filter(source_text_inscription_number=inscription_number)
 
@@ -526,6 +538,7 @@ def extract_inscription_attributes(inscription):
         },
         "inscription_id": inscription.inscription_id,
         "location": {
+            "id": inscription.location_id,
             "name": inscription.location_name,
             "coordinates": [inscription.coordinates[1], inscription.coordinates[0]] if inscription.coordinates else None
         },

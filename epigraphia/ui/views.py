@@ -21,20 +21,42 @@ def home(request):
 def inscription(request, inscription_id):
 
     inscription_json = views.InscriptionJoinedView().get(request, inscription_id).content
-    inscription = json.loads(inscription_json.decode('utf-8'))['data']
-    chapter_id = inscription['chapter']['id']
-    other_inscriptions_in_chapter = models.Inscription.objects\
-        .filter(source_text_chapter__source_text_chapter_id=chapter_id).order_by('source_text_inscription_number')
-    other_inscriptions_in_chapter = list(other_inscriptions_in_chapter)
-    other_inscriptions = [
+    inscription_from_json = json.loads(inscription_json.decode('utf-8'))['data']
+
+    chapter_id = inscription_from_json['chapter']['id']
+    inscription_search_object = {
+        "chapter": {
+            "id": chapter_id
+        }
+    }
+    inscriptions_in_chapter = views.search_inscriptions(inscription_search_object)
+    inscriptions_in_chapter = list(inscriptions_in_chapter)
+    inscriptions_in_chapter_list = [
         {
             "inscription_id": other_inscription.inscription_id,
             "inscription_number": other_inscription.source_text_inscription_number
-        } for other_inscription in other_inscriptions_in_chapter
+        } for other_inscription in inscriptions_in_chapter
     ]
+
+    location_id = inscription_from_json['location']['id']
+    inscription_search_object = {
+        "location": {
+            "id": location_id
+        }
+    }
+    inscriptions_at_location = views.search_inscriptions(inscription_search_object)
+    inscriptions_at_location = list(inscriptions_at_location)
+    inscriptions_at_location_list = [
+        {
+            "inscription_id": other_inscription.inscription_id,
+            "inscription_number": other_inscription.source_text_inscription_number
+        } for other_inscription in inscriptions_at_location
+    ]
+
     context = {
-        'other_inscriptions': other_inscriptions,
-        'inscription': inscription
+        'inscription': inscription_from_json,
+        'inscriptions_in_chapter': inscriptions_in_chapter_list,
+        'inscriptions_at_location': inscriptions_at_location_list
     }
     return render(request, 'inscription.html', context)
 
