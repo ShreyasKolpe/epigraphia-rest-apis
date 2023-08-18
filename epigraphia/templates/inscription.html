@@ -56,37 +56,9 @@
                     {% endfor %}
                 </div>
                 <h4>Inscription No. {{ inscription.inscription_number }}</h4>
-                <h5>Transliteration</h5>
-                {% if inscription.transliteration_header %}
-                <em>{{ inscription.transliteration_header|linebreaksbr }}</em>
-                    <br/>
-                    <br/>
-                {% endif %}
 
-                {{ inscription.transliteration|linebreaksbr }}
-                <br/>
-                <br/>
+                {% fmt_inscription %}
 
-                {% if inscription.transliteration_footnotes %}
-                <em>{{ inscription.transliteration_footnotes|linebreaksbr }}</em>
-                    <br/>
-                {% endif %}
-                <br/>
-                <h5>Translation</h5>
-                {% if inscription.translation_header %}
-                <em>{{ inscription.translation_header|linebreaksbr }}</em>
-                    <br/>
-                    <br/>
-                {% endif %}
-
-                {{ inscription.translation|linebreaksbr }}
-                <br/>
-                <br/>
-
-                {% if inscription.translation_footnotes %}
-                <em>{{ inscription.translation_footnotes|linebreaksbr }}</em>
-                    <br/>
-                {% endif %}
             </div>
         </div>
     </div>
