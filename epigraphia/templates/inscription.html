@@ -49,13 +49,14 @@
                 </div>
             </div>
             <div id="inscription" class="col-lg-9">
-                <strong>Inscriptions in chapter: </strong>
+                <strong>Inscriptions in same chapter: </strong>
                 <div id="inscription_navbar">
                     {% for inscription in inscriptions_in_chapter|dictsort:"inscription_number" %}
                         <a href="/inscription/{{ inscription.inscription_id }}">{{ inscription.inscription_number }}</a>
                     {% endfor %}
                 </div>
                 <h4>Inscription No. {{ inscription.inscription_number }}</h4>
+                <a href="/admin/apis/inscription/{{ inscription.inscription_id }}/change/" target="_blank"><i class="bi bi-pencil">Edit</i></a>
 
                 {% fmt_inscription %}
 
