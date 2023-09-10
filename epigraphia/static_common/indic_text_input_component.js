@@ -1,5 +1,4 @@
 function insertCharacterInto(characterId) {
-    console.log(characterId, textInputToUse);
     var elem = document.getElementById(textInputToUse)
     var charToInsert = shadowRoot.getElementById(characterId).value
     var curPos = elem.selectionStart
@@ -32,7 +31,6 @@ var keyboardElem;
 const textareaList = document.getElementsByTagName("textarea");
 for(var i = 0; i < textareaList.length; i++){
     const elem = textareaList[i]
-    console.log(elem.id)
     elem.addEventListener("focus", function() { registerthis(elem.id) })
     elem.setAttribute("spellcheck", "false")
 }
@@ -54,7 +52,7 @@ class IndicTextInput extends HTMLElement {
             6: {'t': 'disabled', 'th': 'disabled', 'd': 'disabled', 'dh': 'disabled', 'n': 'disabled'},
             7: {'p': 'disabled', 'ph': 'disabled', 'b': 'disabled', 'bh': 'disabled', 'm': 'disabled'},
             8: {'ṟ': '_R', 'ḷ': '_l', 'ḻ': '_L', 'ś': '_sh', 'ṣ': '_Sh'},
-            9: {'½': '_half', '¼': '_quarter', "śrī": "_sri"}
+            9: {'½': '_half', '¼': '_quarter', "śrī": "_sri", '‖': '_stop'}
         }
 
         const table = document.createElement("table");
@@ -81,7 +79,6 @@ class IndicTextInput extends HTMLElement {
         row.appendChild(cell);
 
         this.shadowRoot.append(table);
-        <!--this.hidden = true-->
         keyboardElem = this
     }
 }
