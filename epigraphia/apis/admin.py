@@ -160,11 +160,11 @@ class InscriptionAdmin(admin.ModelAdmin):
     inlines = [TransliterationInline, TranslationInline]
     list_display = ('get_text_title', 'get_chapter_title', 'source_text_inscription_number', 'location')
     search_fields = ('source_text_chapter__source_text__source_text_title',
-                     'source_text_chapter__source_text_chapter_title')
+                     'source_text_chapter__source_text_chapter_title', 'source_text_inscription_number')
     list_per_page = 25
     list_filter = ('source_text_chapter__source_text__source_text_title',)
     # Autocomplete for source text chapter for ease of use
-    autocomplete_fields = ('source_text_chapter', )
+    autocomplete_fields = ('source_text_chapter', 'location')
     form = InscriptionAdminForm
 
     @admin.display(description='Source Text')
