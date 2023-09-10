@@ -28,9 +28,10 @@ class Cleaner(View):
         if form.is_valid():
             output_str = clean_epigraphia.processor(form.cleaned_data['input_str'], form.cleaned_data['lang'],
                                                     form.cleaned_data['process_a'], form.cleaned_data['process_e'],
-                                                    form.cleaned_data['process_o'], form.cleaned_data['process_s'],
-                                                    form.cleaned_data['process_sri'], form.cleaned_data['process_n'],
-                                                    form.cleaned_data['process_jn'], form.cleaned_data['process_m'])
+                                                    form.cleaned_data['process_o'], form.cleaned_data['process_u'],
+                                                    form.cleaned_data['process_s'], form.cleaned_data['process_sri'],
+                                                    form.cleaned_data['process_n'], form.cleaned_data['process_jn'],
+                                                    form.cleaned_data['process_m'])
             context = {
                 'form': form,
                 'output_str': output_str
