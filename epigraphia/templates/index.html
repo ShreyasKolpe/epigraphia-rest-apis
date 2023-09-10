@@ -23,7 +23,7 @@
      <div class="row">
          <div class="col-lg-6">
              <form action="/inscription/search" method="post">
-                <select id="sourceTextSelector" name="sourceText" onchange="updateChapterSelection()" class="form-select">
+                <select id="sourceTextSelector" name="sourceText" class="form-select">
                     {% for text in source_texts.data %}
                         <option value="{{text.id}}">{{ text.title }}, {{ text.series }} {{ text.volume }}</option>
                     {% endfor %}
@@ -63,37 +63,42 @@
         map.addLayer(markers)
 
     </script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
     <script type="text/javascript">
-        document.getElementById("sourceTextSelector").selectedIndex = -1;
+        $("#sourceTextSelector").prop("selectedIndex", -1);
 
-        function updateChapterSelection() {
-            const sourceTextElem = document.getElementById("sourceTextSelector")
-            const sourceTextChapterElem = document.getElementById("sourceTextChapterSelector")
-            var L = sourceTextChapterElem.options.length - 1;
-                for(var i = L; i >= 0; i--) {
-                     sourceTextChapterElem.remove(i);
-            }
-            if(sourceTextElem.selectedIndex != -1) {
-                var value = sourceTextElem.options[sourceTextElem.selectedIndex].value
-                var xhttp = new XMLHttpRequest();
-                xhttp.open("post", "/api/v1/source_text_chapter/search", true)
-                xhttp.responseType = "json"
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                        response = xhttp.response
-                        for(var i = 0; i < response.data.length; ++i) {
-                            <!--console.log(response.data[i])-->
-                            const option = document.createElement("option")
-                            option.value = response.data[i].chapter_id
-                            option.innerHTML = response.data[i].chapter_title
-                            sourceTextChapterElem.appendChild(option)
+        $("#sourceTextSelector").change(function(event) {
+
+            $("#sourceTextChapterSelector").empty();
+
+            if($("#sourceTextSelector").selectedIndex != -1) {
+
+                $.ajax({
+                    url: "/api/v1/source_text_chapter/search",
+                    method: "POST",
+                    data: JSON.stringify({
+                            source_text: {
+                                id: $("#sourceTextSelector").find(":selected").val()
+                            }
+                    }),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function(response) {
+
+                        for(var i = 0; i < response.data.length; i++) {
+                            const option = document.createElement("option");
+                            option.value = response.data[i].chapter_id;
+                            option.innerHTML = response.data[i].chapter_title;
+                            $("#sourceTextChapterSelector").append(option);
                         }
-                        sourceTextChapterElem.selectedIndex = -1
+                        $("#sourceTextChapterSelector").prop("selectedIndex", -1);
+
                     }
-                }
-                xhttp.send("{\"source_text\": {\"id\":" + value + " }}")
+                });
+
             }
-        }
+        });
     </script>
 </body>
 </html>
