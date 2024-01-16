@@ -1,8 +1,12 @@
-# REST APIs for Epigraphia Carnatica database
+# Epigraphia Carnatica Online application/database
 
-This repo will contain code for the REST APIs to access the database containing 'cleaned' inscriptions from Epigraphia Carnatica (EC). See ['Cleaning' Epigraphia Carnatica for Knowledge Graphs](https://github.com/ShreyasKolpe/epigraphia-data-cleaning) for details on the (currently manual) process of obtaining cleaned information from EC.
+This repo will contain code for the REST APIs to access the database containing 'cleaned' inscriptions from Epigraphia Carnatica (EC). 
+See ['Cleaning' Epigraphia Carnatica for Knowledge Graphs](https://github.com/ShreyasKolpe/epigraphia-data-cleaning) for details 
+on the (currently manual) process of obtaining cleaned information from EC.
 
-The database is being built privately and step-by-step. Once the backend and frontend are in place, the database is planned to be hosted online. Building on this, the database is intended to feed into a project to build knowledge graphs from the inscriptions in EC. This is planned as a prototype.
+The database is being built privately and step-by-step. Once the backend and frontend are in place, the database is planned 
+to be hosted online. Building on this, the database is intended to feed into a project to build knowledge graphs from the 
+inscriptions in EC. This is planned as a prototype.
 
 ## Access
 
@@ -11,9 +15,14 @@ To use the APIs, use this as the base url to which to add the rest of the path.
 
 ## ER Schema
 
-The following ER schema has been developed:![er_schema](https://user-images.githubusercontent.com/13967444/163443220-3d36cb1a-63f4-43e0-9938-d8afbe544c8f.svg)
+The following ER schema has been developed:![er_schema](er_schema_wlocn.svg)
 
-EC is a series of volumes (here called **source_text**). Each volume has chapter-like geographical subdivisions (here called **source_text_chapter**). The atomic 'object' is the inscription itself (called **inscription**), whose information is spread across the book under different headings, but using a single numbering for the geographical subdivision. Primarily, this is three-fold: the inscription text in Indic script, inscription text in 'Roman' (Latin) characters, and translation in English. At this stage, the project only involves itself with the latter two (called **transliteration** and **translation** respectively).
+EC is a series of volumes (here called **source_text**). Each volume has chapter-like geographical subdivisions (here called **source_text_chapter**). 
+The real world 'object' is the inscription itself (called **inscription**), whose information is spread across the book under different
+headings, but using a single numbering for the geographical subdivision. Primarily, this is three-fold: the inscription text in Indic script, 
+inscription text in 'Roman' (Latin) characters, and translation in English. At this stage, the project only involves itself with
+the latter two (called **transliteration** and **translation** respectively).
+Each inscription is associated with a location (represented by the **location** object).
 
 ## Backend
 
@@ -40,7 +49,7 @@ Register APIs are meant to be create or update i.e., upsert.
 
 Get APIs are read-only. (Here, the semantics of get is that of fetching, and not that of HTTP GET method. Thus, get is sometimes performed using POST as well)
 
-### Source Text
+### Source Text (Book)
 
 1. **Register the text**
 
@@ -96,7 +105,7 @@ Errors:
 Request:
 
 ```
-GET /api/v1/source_text/<id>
+GET /api/v1/source_text/<id:int>
 ```
 
 Response:
@@ -104,7 +113,7 @@ Response:
 ```
 {
     "status": 200,
-    "message": "Successfulluy found this record"
+    "message": "Successfully found this record"
     "data":  {
         "id": ,
         "title": "",
@@ -154,7 +163,7 @@ Response:
 ```
 
 
-### Source Text Chapter
+### Source Text Chapter (Book Chapter)
 
 1. **Register the chapter**
 
@@ -282,6 +291,56 @@ Response:
     ]
 }
 ```
+
+### Location
+
+1. **Get a location by id**
+
+Request:
+
+``` 
+GET /api/v1/location/<id:int>
+```
+
+Response:
+
+```
+{
+    "status": 200,
+    "message": "Successfully found this record",
+    "data": {
+        "location_id": ,
+        "location_name": "",
+        "coordinates":
+    }
+}
+```
+
+Error:
+
+| HTTP Status | Error Condition               |
+|-------------|-------------------------------|
+| 404, Not Found | If no location matches the id |
+
+
+2. **Get all locations**
+
+Request:
+
+``` 
+GET /api/v1/location
+```
+
+Response:
+
+```
+{
+    "status": 200,
+    "message": "Successfully found these records",
+    "data": []
+}
+```
+
 
 ### Inscription
 
