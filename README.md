@@ -1,5 +1,18 @@
 # Epigraphia Carnatica Online application/database
 
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [Access](#access)
+- [ER Schema](#er-schema)
+- [Backend](#backend)
+- [REST APIs](#rest-apis)
+   * [Source Text (Book)](#source-text-book)
+   * [Source Text Chapter (Book Chapter)](#source-text-chapter-book-chapter)
+   * [Location](#location)
+   * [Inscription](#inscription)
+
+<!-- TOC end -->
+
 This repo will contain code for the REST APIs to access the database containing 'cleaned' inscriptions from Epigraphia Carnatica (EC). 
 See ['Cleaning' Epigraphia Carnatica for Knowledge Graphs](https://github.com/ShreyasKolpe/epigraphia-data-cleaning) for details 
 on the (currently manual) process of obtaining cleaned information from EC.
