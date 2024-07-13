@@ -5,6 +5,7 @@ import json
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
+from django.contrib.gis.geos import Point
 
 # Create your views here.
 
@@ -59,7 +60,7 @@ class SourceTextView(View):
                 return notFoundError(f"Source text with id {text_id} not found")
 
             # Format the response and return it
-            data = self.extract_source_text_attributes(source_text)
+            data = extract_source_text_attributes(source_text)
             response = {
                 "status": 200,
                 "message": "Successfully found this record",
@@ -85,19 +86,20 @@ class SourceTextView(View):
             }
             return JsonResponse(response)
 
-    def extract_source_text_attributes(self, source_text):
-        # Helper method
-        return {
-            "id": source_text.source_text_id,
-            "title": source_text.source_text_title,
-            "subtitle": source_text.source_text_subtitle,
-            "series": source_text.source_text_series,
-            "volume": source_text.source_text_volume,
-            "author": source_text.source_text_author,
-            "publisher": source_text.source_text_publisher,
-            "publication_place": source_text.source_text_publication_place,
-            "publication_date": source_text.source_text_publication_date
-        }
+
+def extract_source_text_attributes(self, source_text):
+    # Helper method
+    return {
+        "id": source_text.source_text_id,
+        "title": source_text.source_text_title,
+        "subtitle": source_text.source_text_subtitle,
+        "series": source_text.source_text_series,
+        "volume": source_text.source_text_volume,
+        "author": source_text.source_text_author,
+        "publisher": source_text.source_text_publisher,
+        "publication_place": source_text.source_text_publication_place,
+        "publication_date": source_text.source_text_publication_date
+    }
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -266,15 +268,49 @@ class LocationView(View):
             }
             return JsonResponse(response)
 
+    def post(self, request):
+        data = json.loads(request.body.decode('utf-8'))
+
+        location_name = data.get('location_name', '')
+        coordinates = data.get('coordinates', {})
+
+        if not location_name or not coordinates or not coordinates['latitude'] or not coordinates['longitude']:
+            return badRequestError("The location_name and coordinates cannot be blank")
+
+        # Check if object exists, if so do an update. Else, create new object
+        try:
+            location = models.Location.objects.get(location_name__iexact=location_name)
+        except models.Location.DoesNotExist:
+            location = models.Location(location_name=location_name)
+
+        # Set updatable attributed
+        location.coordinates = Point([coordinates['latitude'], coordinates['longitude']])
+
+        # Insert into db
+        location.save()
+
+        # Format the response and return it
+        data = extract_location_attributes(location)
+        response = {
+            "status": 200,
+            "message": "Location registered successfully",
+            "data": data
+        }
+        return JsonResponse(response)
+
 
 def extract_location_attributes(location):
     return {
         "location_id": location.location_id,
         "location_name": location.location_name,
-        "coordinates": [location.coordinates[1], location.coordinates[0]] if location.coordinates else None
+        "coordinates": {
+            "latitude": location.coordinates[1],
+            "longitude": location.coordinates[0]
+        }
     }
 
 
+# todo - include location into inscription APIs
 @method_decorator(csrf_exempt, name='dispatch')
 class InscriptionView(View):
     def post(self, request):
@@ -423,6 +459,7 @@ class InscriptionView(View):
         return JsonResponse(response)
 
 
+# todo - include location into inscription APIs
 @method_decorator(csrf_exempt, name='dispatch')
 class InscriptionJoinedView(View):
     def get(self, request, inscription_id=None):
@@ -441,6 +478,7 @@ class InscriptionJoinedView(View):
         return JsonResponse(response)
 
 
+# todo - include location into inscription APIs
 @method_decorator(csrf_exempt)
 def get_inscriptions_by_search(request):
     if request.method == 'POST':
@@ -540,7 +578,10 @@ def extract_inscription_attributes(inscription):
         "location": {
             "id": inscription.location_id,
             "name": inscription.location_name,
-            "coordinates": [inscription.coordinates[1], inscription.coordinates[0]] if inscription.coordinates else None
+            "coordinates": {
+                "latitude": inscription.coordinates[1],
+                "longitude": inscription.coordinates[0]
+            }
         },
         "inscription_number": inscription.source_text_inscription_number,
         "translation_header": inscription.translation_header,

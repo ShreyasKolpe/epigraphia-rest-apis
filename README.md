@@ -307,7 +307,50 @@ Response:
 
 ### Location
 
-1. **Get a location by id**
+1. **Register the location**
+
+Request:
+
+```
+POST /api/v1/location
+
+{
+	"location_name": "",
+    "coordinates": {
+        "latitude": ,
+        "longitude": 
+    }
+}
+```
+
+**Note**: `location_name` and `coordinates` are mandatory fields. `latitude` and `longitude` are mandatory floating-point fields inside `coordinates`
+
+Response:
+
+```
+{
+    "status": 200,
+    "message": "Location registered successfully",
+    "data": {
+        "location_id": ,
+        "location_name": "",
+        "coordinates": {
+            "latitude": ,
+            "longitude" 
+        }
+    }
+}
+```
+
+Errors:
+
+
+| HTTP Status | Error Condition                          |
+|-------------|------------------------------------------|
+| 400, Bad Request | If location_name or coordinates is blank |
+
+
+2**Get a location by id**
 
 Request:
 
@@ -324,7 +367,10 @@ Response:
     "data": {
         "location_id": ,
         "location_name": "",
-        "coordinates":
+        "coordinates": {
+            "latitude": ,
+            "longitude" 
+        }
     }
 }
 ```
@@ -336,7 +382,7 @@ Error:
 | 404, Not Found | If no location matches the id |
 
 
-2. **Get all locations**
+3**Get all locations**
 
 Request:
 
