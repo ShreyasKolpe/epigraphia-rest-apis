@@ -28,7 +28,7 @@ To use the APIs, use this as the base url to which to add the rest of the path.
 
 ## ER Schema
 
-The following ER schema has been developed:![er_schema](er_schema_wlocn.svg)
+The following ER schema has been developed:![er_schema](er_schema_text.svg)
 
 EC is a series of volumes (here called **source_text**). Each volume has chapter-like geographical subdivisions (here called **source_text_chapter**). 
 The real world 'object' is the inscription itself (called **inscription**), whose information is spread across the book under different
