@@ -415,6 +415,7 @@ POST /api/v1/inscription
         "id": ,
         "title": ""
     },
+    "location_id": ,
     "inscription_id": ,
     "inscription_number": "",
     "translation_header": "",
@@ -449,7 +450,15 @@ Response:
         "chapter": {
             "id": ,
             "title": "",
-        }
+        },
+        "location": {
+            "id": ,
+            "name": "",
+            "coordinates": {
+                "latitude": ,
+                "longitude" 
+            }   
+        },
         "inscription_id": ,
         "inscription_number": "",
         "translation_header": "",
@@ -499,7 +508,15 @@ Response:
         "chapter": {
             "id": ,
             "title": "",
-        }
+        },
+        "location": {
+            "id": ,
+            "name": "",
+            "coordinates": {
+                "latitude": ,
+                "longitude" 
+            }   
+        },
         "inscription_id": ,
         "inscription_number": "",
         "translation_header": "",
@@ -549,7 +566,7 @@ POST /api/v1/inscription/search
 
 1. To identify `source_text` provide either the `id` or a combination of the other attributes. Some such 
 information is necessary. To identify `chapter` provide either its `id` or `chapter_title`. To identify `location` 
-provide either its `id` or `location_name`.None of the attributes  are truly mandatory for the API, they act only as filters.
+provide either its `id` or `location_name`. None of the attributes  are truly mandatory for the API, they act only as filters.
 2. In the case of `source_text`, `chapter` and `location`, the `id` if provided will be used before looking for the other attributes.
 
 
@@ -578,8 +595,11 @@ Response:
             },
             "location": {
                  "id": ,
-                 "location_name": "",
-                 "coordinates": []
+                 "name": "",
+                 "coordinates": {
+                    "latitude": ,
+                    "longitude" 
+                }   
             }
             "inscription_id": ,
             "inscription_number": "",

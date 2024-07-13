@@ -310,7 +310,6 @@ def extract_location_attributes(location):
     }
 
 
-# todo - include location into inscription APIs
 @method_decorator(csrf_exempt, name='dispatch')
 class InscriptionView(View):
     def post(self, request):
@@ -398,6 +397,16 @@ class InscriptionView(View):
 
                 inscription.source_text_chapter = chapter
 
+        # If location_id is supplied, set location (useful in upsert)
+        location_id = data.get('location_id', None)
+        if location_id:
+            location = models.Location.objects.get(location_id=location_id)
+
+            if not location:
+                return badRequestError("Matching location not found. Register it first")
+
+            inscription.location = location
+
         # Insert into db
         inscription.save()
 
@@ -442,6 +451,14 @@ class InscriptionView(View):
                     "id": inscription.source_text_chapter.source_text_chapter_id,
                     "title": inscription.source_text_chapter.source_text_chapter_title,
                 },
+                "location": {
+                    "id": inscription.location.location_id,
+                    "name": inscription.location.location_name,
+                    "coordinates": {
+                        "latitude": inscription.location.coordinates[1],
+                        "longitude": inscription.location.coordinates[0]
+                    }
+                },
                 "inscription_id": inscription.inscription_id,
                 "inscription_number": inscription.source_text_inscription_number,
                 "translation_header": translation.header,
@@ -459,7 +476,6 @@ class InscriptionView(View):
         return JsonResponse(response)
 
 
-# todo - include location into inscription APIs
 @method_decorator(csrf_exempt, name='dispatch')
 class InscriptionJoinedView(View):
     def get(self, request, inscription_id=None):
@@ -478,7 +494,6 @@ class InscriptionJoinedView(View):
         return JsonResponse(response)
 
 
-# todo - include location into inscription APIs
 @method_decorator(csrf_exempt)
 def get_inscriptions_by_search(request):
     if request.method == 'POST':
