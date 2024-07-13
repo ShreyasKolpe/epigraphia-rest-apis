@@ -106,6 +106,21 @@ class SourceTextChapterAdmin(admin.ModelAdmin):
             super().save_model(request, obj, form, change)
 
 
+class InscriptionTextInline(admin.StackedInline):
+    model = models.InscriptionText
+    max_num = 1
+    exclude = ('created_by', 'last_modified_by', 'created_at', 'last_modified_at')
+
+    def save_model(self, request, obj, form, change):
+        if request.user.is_authenticated:
+            user = request.user.username
+
+            if not change:
+                obj.created_by = user
+            obj.last_modified_by = user
+            super().save_model(request, obj, form, change)
+
+
 class TranslationInline(admin.StackedInline):
     model = models.Translation
     max_num = 1
@@ -157,7 +172,7 @@ class InscriptionAdminForm(forms.ModelForm):
 
 
 class InscriptionAdmin(admin.ModelAdmin):
-    inlines = [TransliterationInline, TranslationInline]
+    inlines = [InscriptionTextInline, TransliterationInline, TranslationInline]
     list_display = ('get_text_title', 'get_chapter_title', 'source_text_inscription_number', 'location')
     search_fields = ('source_text_chapter__source_text__source_text_title',
                      'source_text_chapter__source_text_chapter_title', 'source_text_inscription_number')

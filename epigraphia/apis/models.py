@@ -89,6 +89,25 @@ class Inscription(models.Model):
         db_table = 'inscription'
 
 
+class InscriptionText(models.Model):
+    text_id = models.AutoField(primary_key=True)
+    header = models.TextField(blank=True, null=True)
+    original_text = models.TextField(blank=True, null=True)
+    footnotes = models.TextField(blank=True, null=True)
+    inscription = models.ForeignKey(Inscription, on_delete=models.SET_NULL, null=True)
+    created_by = models.CharField(blank=True, null=True, max_length=100)
+    last_modified_by = models.CharField(blank=True, null=True, max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    last_modified_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    def __str__(self):
+        return str(self.inscription)
+
+    class Meta:
+        managed = False
+        db_table = 'inscription_text'
+
+
 class Transliteration(models.Model):
     transliteration_id = models.AutoField(primary_key=True)
     header = models.TextField(blank=True, null=True)
@@ -144,6 +163,9 @@ class InscriptionJoined(models.Model):
     location_id = models.IntegerField()
     location_name = models.TextField(blank=True, null=True)
     coordinates = gis_models.PointField()
+    inscription_text_header = models.TextField(blank=True, null=True)
+    original_text = models.TextField(blank=True, null=True)
+    inscription_text_footnotes = models.TextField(blank=True, null=True)
     translation_header = models.TextField(blank=True, null=True)
     translation = models.TextField(blank=True, null=True)
     translation_footnotes = models.TextField(blank=True, null=True)
