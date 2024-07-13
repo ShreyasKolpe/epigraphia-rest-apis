@@ -56,7 +56,8 @@
         const location_data = locations.data
         var markers = L.markerClusterGroup()
         location_data.forEach(function(value) {
-            var marker = L.marker(value.coordinates)
+            var coordinates = [value.coordinates.latitude, value.coordinates.longitude]
+            var marker = L.marker(coordinates)
             marker.bindPopup("<a href='/location/"+value.location_id+"'>"+value.location_name+"</a>")
             markers.addLayer(marker)
         })

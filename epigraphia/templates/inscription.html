@@ -55,11 +55,69 @@
                         <a href="/inscription/{{ inscription.inscription_id }}">{{ inscription.inscription_number }}</a>
                     {% endfor %}
                 </div>
-                <h4>Inscription No. {{ inscription.inscription_number }}</h4>
-                <a href="/admin/apis/inscription/{{ inscription.inscription_id }}/change/" target="_blank"><i class="bi bi-pencil">Edit</i></a>
+                <span>
+                    <h4>Inscription No. {{ inscription.inscription_number }}</h4>
+                    <a href="/admin/apis/inscription/{{ inscription.inscription_id }}/change/" target="_blank"><i class="bi bi-pencil">Edit</i></a>
+                </span>
+                <br>
                 <br>
 
-                {% fmt_inscription %}
+                <h5>Text</h5>
+
+                {% if inscription.inscription_text_header %}
+                    <em>{{ inscription.inscription_text_header|linebreaksbr }}</em>
+                    <br/>
+                    <br/>
+                {% endif %}
+
+                {% if inscription.text %}
+                    {{ inscription.text|linenumbers|linebreaksbr }}
+                {% endif %}
+
+                {% if inscription.inscription_text_footnotes %}
+                    <br/>
+                    <br/>
+                    <em>{{ inscription.inscription_text_footnotes|linenumbers|linebreaksbr }}</em>
+                    <br/>
+                {% endif %}
+
+                <br/>
+                <br/>
+                <h5>Transliteration</h5>
+
+                {% if inscription.transliteration_header %}
+                    <em>{{ inscription.transliteration_header|linebreaksbr }}</em>
+                    <br/>
+                    <br/>
+                {% endif %}
+
+                {{ inscription.transliteration|linebreaksbr }}
+
+                {% if inscription.transliteration_footnotes %}
+                    <br/>
+                    <br/>
+                    <em>{{ inscription.transliteration_footnotes|linenumbers|linebreaksbr }}</em>
+                    <br/>
+                {% endif %}
+                <br/>
+
+                <br/>
+                <h5>Translation</h5>
+
+                {% if inscription.translation_header %}
+                    <em>{{ inscription.translation_header|linebreaksbr }}</em>
+                    <br/>
+                    <br/>
+                {% endif %}
+
+                {{ inscription.translation|linebreaksbr }}
+
+                {% if inscription.translation_footnotes %}
+                    <br/>
+                    <br/>
+                    <em>{{ inscription.translation_footnotes|linenumbers|linebreaksbr }}</em>
+                    <br/>
+                {% endif %}
 
             </div>
         </div>
@@ -70,12 +128,13 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
-        var map = L.map('map').setView({{ inscription.location.coordinates }}, 10);
+        var coordinates = [{{ inscription.location.coordinates.latitude }}, {{ inscription.location.coordinates.longitude }}]
+        var map = L.map('map').setView(coordinates, 10);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
-        var marker = L.marker({{ inscription.location.coordinates }}).addTo(map);
+        var marker = L.marker(coordinates).addTo(map)
         marker.bindPopup("{{ inscription.location.name }}").openPopup();
     </script>
 </body>
