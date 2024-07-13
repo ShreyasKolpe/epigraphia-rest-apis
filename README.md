@@ -403,7 +403,7 @@ Response:
 
 ### Inscription
 
-1. **Register transliteration and/or translation for inscription**
+1. **Register inscription text and/or transliteration and/or translation for an inscription**
 
 Request:
 
@@ -418,12 +418,15 @@ POST /api/v1/inscription
     "location_id": ,
     "inscription_id": ,
     "inscription_number": "",
+    "inscription_text_header": "",
+    "text": "",
+    "inscription_text_footnotes": "",
     "translation_header": "",
     "translation": "",
-    "translation_footer": "",
+    "translation_footnotes": "",
     "transliteration_header": "",
     "transliteration": "",
-    "transliteration_footer": ""
+    "transliteration_footnotes": ""
 }
 ```
 
@@ -461,6 +464,9 @@ Response:
         },
         "inscription_id": ,
         "inscription_number": "",
+        "inscription_text_header": "",
+        "text": "",
+        "inscription_text_footnotes": "",
         "translation_header": "",
         "translation": "",
         "translation_footer": "",
@@ -519,6 +525,9 @@ Response:
         },
         "inscription_id": ,
         "inscription_number": "",
+        "inscription_text_header": "",
+        "text": "",
+        "inscription_text_footnotes": "",
         "translation_header": "",
         "translation": "",
         "translation_footer": "",
@@ -603,6 +612,9 @@ Response:
             }
             "inscription_id": ,
             "inscription_number": "",
+            "inscription_text_header": "",
+            "text": "",
+            "inscription_text_footnotes": "",
             "translation_header": "",
             "translation": "",
             "translation_footer": "",

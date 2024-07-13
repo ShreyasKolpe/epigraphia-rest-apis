@@ -376,7 +376,8 @@ class InscriptionView(View):
                 return notFoundError(f"Inscription with id {inscription_id} does not exist")
 
             # It is possible to set the chapter and inscription_number since that information is not being used to id
-            inscription.source_text_inscription_number = inscription_number
+            if inscription_number:
+                inscription.source_text_inscription_number = inscription_number
 
             if chapter:
                 chapter_id = chapter.get('id', None)
@@ -409,6 +410,19 @@ class InscriptionView(View):
 
         # Insert into db
         inscription.save()
+
+        # Check if inscription_text i.e. text in indic language exists for this inscription.
+        # If so update, otherwise insert
+        try:
+            inscription_text = models.InscriptionText.objects.get(inscription__inscription_id=inscription.inscription_id)
+        except models.InscriptionText.DoesNotExist:
+            inscription_text = models.InscriptionText()
+            inscription_text.inscription = inscription
+        inscription_text.header = data.get('inscription_text_header', '')
+        inscription_text.original_text = data.get('text', '')
+        inscription_text.footnotes = data.get('inscription_text_footer', '')
+
+        inscription_text.save()
 
         # Check if translation exists for this inscription. If so update, otherwise insert
         try:
@@ -461,6 +475,9 @@ class InscriptionView(View):
                 },
                 "inscription_id": inscription.inscription_id,
                 "inscription_number": inscription.source_text_inscription_number,
+                "inscription_text_header": inscription_text.header,
+                "text": inscription_text.original_text,
+                "inscription_text_footnotes": inscription_text.footnotes,
                 "translation_header": translation.header,
                 "translation": translation.translation,
                 "translation_footnotes": translation.footnotes,
@@ -470,7 +487,7 @@ class InscriptionView(View):
         }
         response = {
             "status": 200,
-            "message": "Successfully registered translation and/or transliteration",
+            "message": "Successfully registered inscription text and/or translation and/or transliteration",
             "data": response_data
         }
         return JsonResponse(response)
@@ -599,6 +616,9 @@ def extract_inscription_attributes(inscription):
             }
         },
         "inscription_number": inscription.source_text_inscription_number,
+        "inscription_text_header": inscription.inscription_text_header,
+        "text": inscription.original_text,
+        "inscription_text_footnotes": inscription.inscription_text_footnotes,
         "translation_header": inscription.translation_header,
         "translation": inscription.translation,
         "translation_footnotes": inscription.translation_footnotes,
