@@ -585,7 +585,9 @@ def search_inscriptions(data):
     if inscription_number:
         inscription_queryset = inscription_queryset.filter(source_text_inscription_number=inscription_number)
 
-    return list(inscription_queryset)
+    sorted_inscriptions = inscription_queryset.order_by('source_text_inscription_number')
+    return list(sorted_inscriptions)
+    # return list(inscription_queryset)
 
 
 def extract_inscription_attributes(inscription):
