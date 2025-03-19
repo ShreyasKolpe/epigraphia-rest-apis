@@ -41,7 +41,7 @@
                     {% if inscriptions_at_location %}
                         <strong>Inscriptions at same location: </strong>
                         <div id="location_navbar">
-                            {% for inscription in inscriptions_at_location|dictsort:"inscription_number" %}
+                            {% for inscription in inscriptions_at_location %}
                                 <a href="/inscription/{{ inscription.inscription_id }}">{{ inscription.inscription_number }}</a>
                             {% endfor %}
                         </div>
@@ -51,7 +51,7 @@
             <div id="inscription" class="col-lg-9">
                 <strong>Inscriptions in same chapter: </strong>
                 <div id="inscription_navbar">
-                    {% for inscription in inscriptions_in_chapter|dictsort:"inscription_number" %}
+                    {% for inscription in inscriptions_in_chapter %}
                         <a href="/inscription/{{ inscription.inscription_id }}">{{ inscription.inscription_number }}</a>
                     {% endfor %}
                 </div>
